@@ -4,10 +4,10 @@ services:
       file: infrastructure/docker/docker-compose.base.yml
       service: postgres
 
-  ceitba-api-dev:
+  ceitba-api-prod:
     extends:
-      file: infrastructure/docker/docker-compose.dev.yml
-      service: ceitba-api-dev
+      file: infrastructure/docker/docker-compose.prod.yml
+      service: ceitba-api-prod
 
 volumes:
   postgres_data:
