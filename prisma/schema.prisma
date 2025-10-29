@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["public", "wiki"]
+  schemas  = ["public", "wiki", "newsletter"]
 }
 
 // SCHEMA PUBLIC
@@ -378,4 +378,52 @@ model SubjectBookmark {
   @@index([userId])
   @@map("Subject_Bookmarks")
   @@schema("wiki")
+}
+
+//SCHEMA newsletter
+
+enum PostType {
+  EVENT
+  NEWS
+  ANNOUNCEMENT
+  @@schema("newsletter")
+}
+
+model Post {
+  id           String     @id @default(cuid())
+  slug         String     @unique
+  title        String
+  excerpt      String?
+  markdown     String
+  organization String?
+  category     String?
+  author       String?
+  type         PostType   @default(NEWS)
+  publishedAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  tags         PostTag[]
+
+  @@schema("newsletter")
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  posts     PostTag[]
+  createdAt DateTime  @default(now())
+
+  @@schema("newsletter")
+}
+
+model PostTag {
+  postId String
+  tagId  String
+
+  post   Post @relation(fields: [postId], references: [id])
+  tag    Tag  @relation(fields: [tagId], references: [id])
+
+  @@id([postId, tagId])
+  @@schema("newsletter")
 }
