@@ -4,12 +4,15 @@ import { UserModule } from './presentation/v1/modules/user.module';
 import { ItbaModule } from './presentation/v1/modules/itba.module';
 import { HealthController } from './presentation/v1/controllers/health.controller';
 import { CronService } from './shared/services/cron.service';
+import { NewsletterModule } from './presentation/v1/modules/newsletter.module';
+
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     UserModule,
     ItbaModule,
+    NewsletterModule,
   ],
   controllers: [HealthController],
   providers: [CronService],
