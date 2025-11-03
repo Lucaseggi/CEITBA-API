@@ -35,19 +35,21 @@ export class PostsController {
     }
   }
 
-  @Get(':idOrSlug')
+  @Get(':slug')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get post by id or slug' })
-  @ApiParam({ name: 'idOrSlug', description: 'Post ID or slug' })
+  @ApiOperation({ summary: 'Get post by slug' })
+  @ApiParam({ name: 'slug', description: 'Post slug' })
   @ApiResponse({ status: 200, description: 'Post found' })
   @ApiResponse({ status: 404, description: 'Post not found' })
-  async findOne(@Param('idOrSlug') idOrSlug: string) {
+  async findOne(@Param('slug') slug: string) {
     try {
-      return await this.getPost.byIdOrSlug(idOrSlug, true);
+      return await this.getPost.bySlug(slug);
     } catch (e: any) {
-      if (e.code === 'NOT_FOUND') throw new NotFoundException({ error: { code: 'NOT_FOUND', message: 'No encontrado' } });
+      if (e.code === 'NOT_FOUND') {
+        throw new NotFoundException({ error: { code: 'NOT_FOUND', message: 'No encontrado' } });
+      }
       throw e;
-    }
+   }
   }
 
   @Get()
