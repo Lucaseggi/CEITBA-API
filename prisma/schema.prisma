@@ -8,6 +8,14 @@ datasource db {
   schemas  = ["public", "wiki", "newsletter"]
 }
 
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+  @@schema("public")
+}
+
+
 // SCHEMA PUBLIC
 model User {
   id               String   @id @default(uuid()) @db.Uuid
@@ -19,6 +27,8 @@ model User {
   createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz
   preferedLanguage String?  @default("es") @map("prefered_language") @db.VarChar(5)
+  role             Role     @default(USER)
+  authLocal        AuthLocal?
 
   ceitbaStaff CeitbaStaff?
 
@@ -40,6 +50,16 @@ model User {
   @@index([plan])
   @@index([name])
   @@map("user")
+  @@schema("public")
+}
+
+model AuthLocal {
+  userId       String  @id @map("user_id") @db.Uuid
+  passwordHash String  @map("password_hash") @db.VarChar(255)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_local")
   @@schema("public")
 }
 
