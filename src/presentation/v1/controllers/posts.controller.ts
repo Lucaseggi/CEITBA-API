@@ -1,6 +1,7 @@
 import {
   Controller, Get, Post, Body, Param, Query,
-  HttpCode, HttpStatus, NotFoundException, ConflictException, UnprocessableEntityException
+  HttpCode, HttpStatus, NotFoundException, ConflictException, UnprocessableEntityException,
+  UseGuards
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiQuery } from '@nestjs/swagger';
 
@@ -8,9 +9,13 @@ import { CreatePostRequestDto } from '../dto/create-post.request.dto';
 import { CreatePostService } from '@/domain/newsletter/services/create-post.service';
 import { GetPostService } from '@/domain/newsletter/services/get-post.service';
 import { ListPostsService } from '@/domain/newsletter/services/list-posts.service';
+import { JwtAuthGuard } from '../../../shared/security/jwt-auth.guard';
+import { Roles } from '../../../shared/security/roles.decorator';
+import { RolesGuard } from '../../../shared/security/roles.guard';
 
 @ApiTags('Posts')
 @Controller('v1/posts')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PostsController {
   constructor(
     private readonly createPost: CreatePostService,
@@ -19,6 +24,7 @@ export class PostsController {
   ) {}
 
   @Post()
+  @Roles('MODERATOR','ADMIN')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new post' })
   @ApiBody({ type: CreatePostRequestDto })
