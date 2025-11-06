@@ -1,20 +1,20 @@
 services:
-  # Development API service
   ceitba-api-dev:
     build:
-      context: ../../  # Build from project root
+      context: ../../
       dockerfile: infrastructure/docker/Dockerfile
       target: development
     container_name: ceitba-api-dev
     ports:
       - "3000:3000"
     volumes:
-      - ../../:/app  # Mount project root
+      - ../../:/app:rw
       - /app/node_modules
     environment:
       - NODE_ENV=development
       - PORT=3000
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-ceitba_password}@postgres:5432/${POSTGRES_DB:-ceitba_db}
+      - CHOKIDAR_USEPOLLING=true
     env_file:
       - ../../.env
     networks:
@@ -23,6 +23,7 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
+    user: "0:0"
     develop:
       watch:
         - action: sync
