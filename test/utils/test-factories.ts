@@ -1,8 +1,9 @@
 import { Subject } from '@/domain/itba/models/subject.model';
 import { Career } from '@/domain/itba/models/career.model';
-import { Classroom, ClassroomSchedule, DayOfWeek, TimeSlot } from '@/domain/itba/models/classroom.model';
+import { Classroom, ClassroomSchedule, TimeSlot } from '@/domain/itba/models/classroom.model';
 import { SubjectPlan } from '@/domain/itba/models/subject-plan.model';
-import { Commission, CommissionTime, SubjectType, DayOfWeek as CommissionDayOfWeek } from '@/domain/itba/models/commission.model';
+import { Commission, CommissionTime, SubjectType } from '@/domain/itba/models/commission.model';
+import { DayOfWeek } from '@/shared/types/day-of-week.types';
 
 /**
  * Factory functions for creating test domain models
@@ -110,7 +111,7 @@ export const createPrismaClassroomResult = (
 
 export const createTestCommissionTime = (
   courseId = 'COMM-001',
-  day: CommissionDayOfWeek = CommissionDayOfWeek.MONDAY,
+  day: DayOfWeek = DayOfWeek.MONDAY,
   classroom = 'A-101',
   building = 'Aula',
   hourFrom: Date = new Date('2024-01-01T08:00:00'),

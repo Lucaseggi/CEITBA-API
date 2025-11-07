@@ -75,7 +75,13 @@ export class ClassroomRepositoryImpl implements ClassroomRepository {
             timeSlot = new TimeSlot(data.hourFrom, data.hourTo);
         }
 
-        const dayOfWeek = DayOfWeekMapper.fromStringOrNull(data.day);
+        // Use INVALID as default for invalid day strings to handle bad data gracefully
+        let dayOfWeek: DayOfWeek | null = null;
+        try {
+            dayOfWeek = DayOfWeekMapper.fromString(data.day);
+        } catch {
+            dayOfWeek = DayOfWeek.INVALID;
+        }
 
         return new ClassroomSchedule(classroom, dayOfWeek, timeSlot);
     }

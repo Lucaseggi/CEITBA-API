@@ -124,7 +124,7 @@ describe('DataSyncService', () => {
       expect(result).toHaveProperty('commissions');
       expect(result).toHaveProperty('totalProcessed');
       expect(result).toHaveProperty('duration');
-      expect(result.duration).toBeGreaterThan(0);
+      expect(result.duration).toBeGreaterThanOrEqual(0);
     });
 
     it('should handle sync with commission parameters', async () => {

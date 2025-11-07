@@ -1,17 +1,12 @@
+import { DayOfWeek } from '@/shared/types/day-of-week.types';
+
+// Re-export for backward compatibility
+export { DayOfWeek };
+
 export enum SubjectType {
     ANNUAL = 'ANNUAL',
     SEMESTRAL = 'SEMESTRAL',
     SAMINARY = 'SAMINARY'
-}
-
-export enum DayOfWeek {
-    MONDAY = 'MONDAY',
-    TUESDAY = 'TUESDAY',
-    WEDNESDAY = 'WEDNESDAY',
-    THURSDAY = 'THURSDAY',
-    FRIDAY = 'FRIDAY',
-    SATURDAY = 'SATURDAY',
-    SUNDAY = 'SUNDAY'
 }
 
 export class CommissionTime {
