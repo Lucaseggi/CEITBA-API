@@ -23,7 +23,7 @@ module.exports = {
   ],
   coverageDirectory: '<rootDir>/coverage',
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  coverageThresholds: {
+  coverageThreshold: {
     global: {
       statements: 10,
       branches: 10,

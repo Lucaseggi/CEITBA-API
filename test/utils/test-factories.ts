@@ -2,6 +2,7 @@ import { Subject } from '@/domain/itba/models/subject.model';
 import { Career } from '@/domain/itba/models/career.model';
 import { Classroom, ClassroomSchedule, DayOfWeek, TimeSlot } from '@/domain/itba/models/classroom.model';
 import { SubjectPlan } from '@/domain/itba/models/subject-plan.model';
+import { Commission, CommissionTime, SubjectType, DayOfWeek as CommissionDayOfWeek } from '@/domain/itba/models/commission.model';
 
 /**
  * Factory functions for creating test domain models
@@ -105,4 +106,79 @@ export const createPrismaClassroomResult = (
 ) => ({
   name,
   building,
+});
+
+export const createTestCommissionTime = (
+  courseId = 'COMM-001',
+  day: CommissionDayOfWeek = CommissionDayOfWeek.MONDAY,
+  classroom = 'A-101',
+  building = 'Aula',
+  hourFrom: Date = new Date('2024-01-01T08:00:00'),
+  hourTo: Date = new Date('2024-01-01T10:00:00')
+): CommissionTime => {
+  return new CommissionTime(courseId, day, classroom, building, hourFrom, hourTo);
+};
+
+export const createTestCommission = (
+  id = 'COMM-001',
+  subjectCode = '93.42',
+  commissionName = 'A',
+  courseStart: Date = new Date('2024-03-01'),
+  courseEnd: Date = new Date('2024-07-31'),
+  enrolledStudents = 30,
+  quota = 40,
+  subjectType: SubjectType = SubjectType.SEMESTRAL,
+  times: CommissionTime[] = []
+): Commission => {
+  return new Commission(
+    id,
+    subjectCode,
+    commissionName,
+    courseStart,
+    courseEnd,
+    enrolledStudents,
+    quota,
+    subjectType,
+    times
+  );
+};
+
+export const createPrismaCommissionResult = (
+  id = 'COMM-001',
+  subjectCode = '93.42',
+  commissionName = 'A',
+  courseStart: Date = new Date('2024-03-01'),
+  courseEnd: Date = new Date('2024-07-31'),
+  enrolledStudents = 30,
+  quota = 40,
+  subjectType = 'SEMESTRAL',
+  times: any[] = []
+) => ({
+  id,
+  subjectCode,
+  commissionName,
+  courseStart,
+  courseEnd,
+  enrolledStudents,
+  quota,
+  subjectType,
+  times,
+});
+
+export const createPrismaSubjectPlanResult = (
+  subjectId = '93.42',
+  planId = '2023',
+  section = 'CIENCIAS_BASICAS',
+  year = 1,
+  semester = 1,
+  dependencies: string[] = [],
+  creditsRequired = 0
+) => ({
+  subjectId,
+  planId,
+  section,
+  year,
+  semester,
+  dependencies,
+  creditsRequired,
 });
