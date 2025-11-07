@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { SubjectController } from './subject.controller';
 import { SubjectService } from '@/domain/itba/services/subject.service';
+import { SubjectPlanService } from '@/domain/itba/services/subject-plan.service';
 import { Subject } from '@/domain/itba/models/subject.model';
 
 const buildSubject = (id = '93.42', name = 'Cálculo I', credits = 6) =>
@@ -10,6 +11,7 @@ const buildSubject = (id = '93.42', name = 'Cálculo I', credits = 6) =>
 describe('SubjectController', () => {
     let controller: SubjectController;
     let subjectService: jest.Mocked<SubjectService>;
+    let subjectPlanService: jest.Mocked<SubjectPlanService>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -23,11 +25,18 @@ describe('SubjectController', () => {
                         getSubjectById: jest.fn(),
                     },
                 },
+                {
+                    provide: SubjectPlanService,
+                    useValue: {
+                        getSubjectsByPlanOrganized: jest.fn(),
+                    },
+                },
             ],
         }).compile();
 
         controller = module.get<SubjectController>(SubjectController);
         subjectService = module.get<SubjectService>(SubjectService) as jest.Mocked<SubjectService>;
+        subjectPlanService = module.get<SubjectPlanService>(SubjectPlanService) as jest.Mocked<SubjectPlanService>;
     });
 
     describe('getSubjectById', () => {

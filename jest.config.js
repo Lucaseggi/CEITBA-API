@@ -12,7 +12,24 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
     prefix: '<rootDir>/',
   }),
-  collectCoverageFrom: ['src/**/*.(t|j)s'],
+  collectCoverageFrom: [
+    'src/**/*.(t|j)s',
+    '!src/main.ts',
+    '!src/**/*.spec.ts',
+    '!src/**/*.dto.ts',
+    '!src/**/*.interface.ts',
+    '!src/**/*.module.ts',
+    '!src/**/index.ts',
+  ],
   coverageDirectory: '<rootDir>/coverage',
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  coverageThresholds: {
+    global: {
+      statements: 10,
+      branches: 10,
+      functions: 10,
+      lines: 10,
+    },
+  },
+  coverageReporters: ['text', 'text-summary', 'html', 'lcov'],
 };
