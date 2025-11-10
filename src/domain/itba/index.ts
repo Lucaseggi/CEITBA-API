@@ -8,8 +8,6 @@ export type { SubjectDto, CreateSubjectDto } from '@/domain/itba/dto/subject.dto
 export type { 
     SubjectPlanDto, 
     CreateSubjectPlanDto,
-    DatabaseSubjectPlan,
-    SubjectPlan as LegacySubjectPlan
 } from '@/domain/itba/dto/subjectPlan.dto';
 export type { 
     ClassroomDto, 

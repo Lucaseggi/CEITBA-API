@@ -6,7 +6,7 @@ export { DayOfWeek };
 export enum SubjectType {
     ANNUAL = 'ANNUAL',
     SEMESTRAL = 'SEMESTRAL',
-    SAMINARY = 'SAMINARY'
+    SAMINARY = 'SAMINARY' // TODO: WAKA - WAKA
 }
 
 export class CommissionTime {

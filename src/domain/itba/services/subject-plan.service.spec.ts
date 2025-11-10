@@ -4,7 +4,6 @@ import { SubjectPlanRepository } from '@/domain/itba/interfaces/repositories/sub
 import { SubjectRepository } from '@/domain/itba/interfaces/repositories/subject.repository.interface';
 import { ItbaApiService } from '@/domain/itba/interfaces/repositories/itba-api.service.interface';
 import { CommissionRepository } from '@/domain/itba/interfaces/repositories/commission.repository.interface';
-import { SubjectPlan } from '@/domain/itba/models/subject-plan.model';
 import {
   SUBJECT_PLAN_REPOSITORY,
   SUBJECT_REPOSITORY,

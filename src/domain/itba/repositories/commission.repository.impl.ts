@@ -2,6 +2,7 @@ import { Commission, CommissionTime, SubjectType, DayOfWeek } from '@/domain/itb
 import { CommissionRepository } from '@/domain/itba/interfaces/repositories/commission.repository.interface';
 import { GenericDomainException } from '@/shared/exceptions';
 import { PrismaService } from '@/shared/database/prisma.service';
+import { DayOfWeek as PrismaDayOfWeek } from '@prisma/client';
 
 export class CommissionRepositoryImpl implements CommissionRepository {
     private readonly prisma: PrismaService;
@@ -90,7 +91,7 @@ export class CommissionRepositoryImpl implements CommissionRepository {
                 subjectType: commission.subjectType,
                 times: {
                     create: commission.times.map(time => ({
-                        day: time.day,
+                        day: time.day as unknown as PrismaDayOfWeek,
                         classroom: time.classroom,
                         building: time.building,
                         hourFrom: time.hourFrom,
@@ -122,7 +123,7 @@ export class CommissionRepositoryImpl implements CommissionRepository {
                 times: {
                     deleteMany: {},
                     create: commission.times.map(time => ({
-                        day: time.day,
+                        day: time.day as unknown as PrismaDayOfWeek,
                         classroom: time.classroom,
                         building: time.building,
                         hourFrom: time.hourFrom,
@@ -162,7 +163,7 @@ export class CommissionRepositoryImpl implements CommissionRepository {
                 times: {
                     deleteMany: {},
                     create: commission.times.map(time => ({
-                        day: time.day,
+                        day: time.day as unknown as PrismaDayOfWeek,
                         classroom: time.classroom,
                         building: time.building,
                         hourFrom: time.hourFrom,
@@ -181,7 +182,7 @@ export class CommissionRepositoryImpl implements CommissionRepository {
                 subjectType: commission.subjectType,
                 times: {
                     create: commission.times.map(time => ({
-                        day: time.day,
+                        day: time.day as unknown as PrismaDayOfWeek,
                         classroom: time.classroom,
                         building: time.building,
                         hourFrom: time.hourFrom,

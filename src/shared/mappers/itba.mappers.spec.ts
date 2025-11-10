@@ -1,7 +1,4 @@
 import { ItbaMappers } from './itba.mappers';
-import { Subject } from '@/domain/itba/models/subject.model';
-import { Career } from '@/domain/itba/models/career.model';
-import { SubjectPlan } from '@/domain/itba/models/subject-plan.model';
 import { DayOfWeek, TimeSlot } from '@/domain/itba/models/classroom.model';
 import {
   createTestSubject,
