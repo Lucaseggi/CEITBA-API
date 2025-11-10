@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { SubjectPlan } from "../../domain/entity/subject-plan.model";
 import { SubjectPlanRepository } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
 import { SubjectRepository } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
-import { ItbaApiService } from "../../domain/interfaces/infrastructure/repositories/itba-api.service.interface";
+import { ItbaApiService } from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
 import { SubjectPlanServiceInterface } from "../../domain/interfaces/application/subject-plan.service.interface";
 import { CommissionService } from "../../domain/interfaces/application/commission.service.interface";
 import {

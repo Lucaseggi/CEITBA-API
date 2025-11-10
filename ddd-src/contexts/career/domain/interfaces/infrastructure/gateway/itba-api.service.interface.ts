@@ -1,5 +1,5 @@
-import { SubjectPlan } from "../../../../domain/entity/subject-plan.model";
-import { Commission } from "../../../../domain/entity/commission.model";
+import { SubjectPlan } from "../../../entity/subject-plan.model";
+import { Commission } from "../../../entity/commission.model";
 
 export interface CommissionQueryParams {
   year?: number;

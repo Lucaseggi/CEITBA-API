@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { DataSyncService, DataSyncResult } from './data-sync.service';
-import { ItbaApiService } from '../../domain/interfaces/application/itba-api.service.interface';
+import { ItbaApiService } from '../../domain/interfaces/infrastructure/gateway/itba-api.service.interface';
 import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
 import { SubjectPlanRepository } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';

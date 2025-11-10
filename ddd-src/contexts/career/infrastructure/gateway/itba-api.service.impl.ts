@@ -15,7 +15,7 @@ import {
   ITBACourseCommissions,
   ITBACourseCommission,
   ITBACourseCommissionTime,
-} from "../../domain/interfaces/infrastructure/repositories/itba-api.service.interface";
+} from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
 import { ApiClient, ApiFactory } from "@/shared/external-apis";
 import { ExternalApiConfig } from "@/shared/external-apis/api-client.interface";
 

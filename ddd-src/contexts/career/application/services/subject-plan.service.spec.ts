@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SubjectPlanService } from './subject-plan.service';
 import { SubjectPlanRepository } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
-import { ItbaApiService } from '../../domain/interfaces/infrastructure/repositories/itba-api.service.interface';
+import { ItbaApiService } from '../../domain/interfaces/infrastructure/gateway/itba-api.service.interface';
 import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import {
   SUBJECT_PLAN_REPOSITORY,

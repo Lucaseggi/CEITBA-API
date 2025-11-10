@@ -5,7 +5,7 @@ import { Commission } from "../../domain/entity/commission.model";
 import {
   ItbaApiService,
   CommissionQueryParams,
-} from "../../domain/interfaces/application/itba-api.service.interface";
+} from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
 import { SubjectRepository } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
 import { SubjectPlanRepository } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
 import { CommissionRepository } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
