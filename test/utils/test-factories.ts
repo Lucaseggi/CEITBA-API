@@ -1,9 +1,9 @@
-import { DayOfWeek } from '@/shared/types/day-of-week.types';
-import { Career } from '@ddd/contexts/career/domain/entity/career.model';
-import { Classroom, ClassroomSchedule, TimeSlot } from '@ddd/contexts/career/domain/entity/classroom.model';
-import { Commission, CommissionTime, SubjectType } from '@ddd/contexts/career/domain/entity/commission.model';
-import { SubjectPlan } from '@ddd/contexts/career/domain/entity/subject-plan.model';
-import { Subject } from '@ddd/contexts/career/domain/entity/subject.model';
+import { DayOfWeek } from '@career/infrastructure/persistence/types/day-of-week.types';
+import { Career } from '@career/domain/entity/career.model';
+import { Classroom, ClassroomSchedule, TimeSlot } from '@career/domain/entity/classroom.model';
+import { Commission, CommissionTime, SubjectType } from '@career/domain/entity/commission.model';
+import { SubjectPlan } from '@career/domain/entity/subject-plan.model';
+import { Subject } from '@career/domain/entity/subject.model';
 
 /**
  * Factory functions for creating test domain models

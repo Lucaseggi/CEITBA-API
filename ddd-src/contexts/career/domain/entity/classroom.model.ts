@@ -1,4 +1,4 @@
-import { DayOfWeek, DayOfWeekMapper } from '@/shared/types/day-of-week.types';
+import { DayOfWeek, DayOfWeekMapper } from '../../infrastructure/persistence/types/day-of-week.types';
 
 // Re-export for backward compatibility
 export { DayOfWeek, DayOfWeekMapper };

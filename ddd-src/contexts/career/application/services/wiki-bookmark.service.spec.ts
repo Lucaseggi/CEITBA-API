@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WikiBookmarkService } from './wiki-bookmark.service';
-import { PrismaService } from '@/shared/database/prisma.service';
+import { PrismaService } from '@boot/database/prisma.service';
 import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mock.helper';
 
 describe('WikiBookmarkService', () => {

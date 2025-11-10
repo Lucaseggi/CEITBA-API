@@ -1,5 +1,5 @@
 import { CommissionRepositoryImpl } from './commission.repository.impl';
-import { GenericDomainException } from '@/shared/exceptions';
+import { GenericDomainException } from '../../domain/exceptions';
 import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mock.helper';
 import { createTestCommission, createTestCommissionTime, createPrismaCommissionResult } from 'test/utils/test-factories';
 import { Commission, DayOfWeek, SubjectType } from '../../domain/entity/commission.model';

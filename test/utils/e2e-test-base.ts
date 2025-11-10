@@ -9,7 +9,7 @@ import {
   verifySeedDataIntegrity,
 } from './test-db-setup';
 import { setupMockAuth } from './auth-mock.helper';
-import { PrismaService } from '../../src/shared/database/prisma.service';
+import { PrismaService } from '@boot/database/prisma.service';
 
 /**
  * Base class for E2E tests
@@ -27,7 +27,7 @@ export class E2ETestBase {
    */
   async initializeApp(moduleImports: any[] = []): Promise<void> {
     // Import AppModule dynamically to avoid circular dependencies
-    const { AppModule } = await import('../../src/app.module');
+    const { AppModule } = await import('@boot/app.module');
 
     this.moduleFixture = await Test.createTestingModule({
       imports: [AppModule, ...moduleImports],

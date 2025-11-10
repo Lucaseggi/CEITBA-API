@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClassroomService } from './classroom.service';
 import { ClassroomRepository } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
 import { ClassroomSchedule, DayOfWeek } from '../../domain/entity/classroom.model';
-import { CLASSROOM_REPOSITORY } from '@/shared/constants/injection-tokens';
+import { CLASSROOM_REPOSITORY } from '@boot/di/injection-tokens';
 import { createTestClassroom, createTestClassroomSchedule, createTestTimeSlot } from 'test/utils/test-factories';
 
 describe('ClassroomService', () => {

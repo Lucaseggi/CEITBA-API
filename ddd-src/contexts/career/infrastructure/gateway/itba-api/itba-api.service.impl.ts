@@ -1,11 +1,11 @@
-import { SubjectPlan } from "../../domain/entity/subject-plan.model";
-import { Subject } from "../../domain/entity/subject.model";
+import { SubjectPlan } from "../../../domain/entity/subject-plan.model";
+import { Subject } from "../../../domain/entity/subject.model";
 import {
   Commission,
   CommissionTime,
   SubjectType,
   DayOfWeek,
-} from "../../domain/entity/commission.model";
+} from "../../../domain/entity/commission.model";
 import {
   ItbaApiService,
   CommissionQueryParams,
@@ -15,9 +15,9 @@ import {
   ITBACourseCommissions,
   ITBACourseCommission,
   ITBACourseCommissionTime,
-} from "../../domain/interfaces/infrastructure/repositories/itba-api.service.interface";
-import { ApiClient, ApiFactory } from "@/shared/external-apis";
-import { ExternalApiConfig } from "@/shared/external-apis/api-client.interface";
+} from "../../../domain/interfaces/infrastructure/repositories/itba-api.service.interface";
+import { ApiClient, ApiFactory } from "./index";
+import { ExternalApiConfig } from "./api-client.interface";
 
 export class ItbaApiServiceImpl implements ItbaApiService {
   private readonly apiClient: ApiClient;

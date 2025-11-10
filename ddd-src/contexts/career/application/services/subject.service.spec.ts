@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SubjectService } from './subject.service';
-import { SUBJECT_REPOSITORY } from '@/shared/constants/injection-tokens';
+import { SUBJECT_REPOSITORY } from '@boot/di/injection-tokens';
 import { createTestSubject } from 'test/utils/test-factories';
 import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
 import { Subject } from '../../domain/entity/subject.model';

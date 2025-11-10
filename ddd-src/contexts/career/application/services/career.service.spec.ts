@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CareerService } from './career.service';
 import { CareerRepository } from '../../domain/interfaces/infrastructure/repositories/career.repository.interface';
 import { Career } from '../../domain/entity/career.model';
-import { CAREER_REPOSITORY } from '@/shared/constants/injection-tokens';
+import { CAREER_REPOSITORY } from '@boot/di/injection-tokens';
 import { createTestCareer } from 'test/utils/test-factories';
 
 describe('CareerService', () => {

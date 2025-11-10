@@ -3,7 +3,7 @@ import { CareerServiceInterface } from '../../domain/interfaces/application/care
 import { Career } from '../../domain/entity/career.model';
 import { CreateCareerDto } from '../dtos/career.dto';
 import { CareerRepository } from '../../domain/interfaces/infrastructure/repositories/career.repository.interface';
-import { CAREER_REPOSITORY } from '../../../../../src/shared/constants/injection-tokens';
+import { CAREER_REPOSITORY } from '@boot/di/injection-tokens';
 
 @Injectable()
 export class CareerService implements CareerServiceInterface {

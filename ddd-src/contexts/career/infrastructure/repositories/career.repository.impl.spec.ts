@@ -5,7 +5,7 @@ import {
   CareerAlreadyExistsException,
   ForeignKeyConstraintViolationException,
 } from '../../domain/exceptions/itba.exceptions';
-import { GenericDomainException } from '@/shared/exceptions';
+import { GenericDomainException } from '../../domain/exceptions';
 import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mock.helper';
 import { createTestCareer, createPrismaCareerResult } from 'test/utils/test-factories';
 

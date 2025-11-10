@@ -23,8 +23,8 @@
       "strictFunctionTypes": false,
       "noImplicitReturns": false,
       "paths": {
-        "@/*": ["src/*"],
-        "@ddd/*": ["ddd-src/*"],
+        "@boot/*": ["ddd-src/boot/*"],
+        "@career/*": ["ddd-src/contexts/career/*"],
         "test/*": ["test/*"]
       }
     },

@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { getSwaggerCustomCss, swaggerConfig } from './shared/utils/swagger-config';
+import { getSwaggerCustomCss, swaggerConfig } from './swagger/swagger-config';
 import * as process from 'process';
 
 async function bootstrap() {

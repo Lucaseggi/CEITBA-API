@@ -7,7 +7,7 @@ import {
 } from "../../domain/exceptions/itba.exceptions";
 import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mock.helper';
 import { createTestSubject, createPrismaSubjectResult } from 'test/utils/test-factories';
-import { GenericDomainException } from '@/shared/exceptions/domain.exceptions';
+import { GenericDomainException } from '../../domain/exceptions/domain.exceptions';
 
 describe('SubjectRepositoryImpl', () => {
   let repository: SubjectRepositoryImpl;

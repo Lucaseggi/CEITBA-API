@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { Commission } from "../../domain/entity/commission.model";
 import { CommissionService } from "../../domain/interfaces/application/commission.service.interface";
 import { CommissionRepository } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
-import { COMMISSION_REPOSITORY } from "../../../../../src/shared/constants/injection-tokens";
+import { COMMISSION_REPOSITORY } from "@boot/di/injection-tokens";
 
 @Injectable()
 export class CommissionServiceImpl implements CommissionService {

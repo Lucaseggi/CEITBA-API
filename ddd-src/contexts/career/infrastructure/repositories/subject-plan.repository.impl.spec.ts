@@ -6,7 +6,7 @@ import {
   SubjectPlanAlreadyExistsException,
   ForeignKeyConstraintViolationException,
 } from '../../domain/exceptions/itba.exceptions';
-import { GenericDomainException } from '@/shared/exceptions';
+import { GenericDomainException } from '../../domain/exceptions';
 import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mock.helper';
 import { createTestSubjectPlan, createPrismaSubjectPlanResult, createPrismaSubjectResult } from 'test/utils/test-factories';
 
@@ -210,7 +210,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.plan.findUnique.mockResolvedValue({ id: '2023' } as any);
       prisma.planSubject.create.mockRejectedValue(prismaError);
 
-      await expect(repository.create(subjectPlan)).rejects.toThrow(GenericDomainException);
+      await expect(repository.create(subjectPlan)).rejects.toThrow('Failed to create subject plan');
     });
   });
 

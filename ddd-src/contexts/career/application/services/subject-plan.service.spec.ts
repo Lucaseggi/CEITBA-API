@@ -9,8 +9,8 @@ import {
   SUBJECT_REPOSITORY,
   ITBA_API_SERVICE,
   COMMISSION_REPOSITORY,
-} from '@/shared/constants/injection-tokens';
-import { ValidationException, ResourceNotFoundException } from '@/shared/exceptions/domain.exceptions';
+} from '@boot/di/injection-tokens';
+import { ValidationException, ResourceNotFoundException } from '../../domain/exceptions/domain.exceptions';
 import { createTestSubjectPlan, createTestSubject, createTestCommission } from 'test/utils/test-factories';
 
 describe('SubjectPlanService', () => {

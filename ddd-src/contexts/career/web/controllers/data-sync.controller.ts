@@ -14,7 +14,7 @@ import {
   ApiParam,
   ApiQuery,
 } from "@nestjs/swagger";
-import { CronService } from "@/shared/services/cron.service";
+import { CronService } from "@boot/cron/cron.service";
 import { CommissionQueryParams } from "../../domain/interfaces/infrastructure/repositories/itba-api.service.interface";
 import { DataSyncResult, DataSyncService } from "../../application/services/data-sync.service";
 

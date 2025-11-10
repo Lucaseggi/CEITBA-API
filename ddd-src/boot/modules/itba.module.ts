@@ -1,30 +1,30 @@
 import { Module } from "@nestjs/common";
-import { CareerController } from "../controllers/career.controller";
-import { ClassroomController } from "../controllers/classroom.controller";
-import { SubjectController } from "../controllers/subject.controller";
-import { SubjectPlanController } from "../controllers/subject-plan.controller";
-import { DataSyncController } from "../controllers/data-sync.controller";
+import { CareerController } from "@career/web/controllers/career.controller";
+import { ClassroomController } from "@career/web/controllers/classroom.controller";
+import { SubjectController } from "@career/web/controllers/subject.controller";
+import { SubjectPlanController } from "@career/web/controllers/subject-plan.controller";
+import { DataSyncController } from "@career/web/controllers/data-sync.controller";
 
-import { CareerService } from "@ddd/contexts/career/application/services/career.service";
-import { ClassroomService } from "@ddd/contexts/career/application/services/classroom.service";
-import { SubjectPlanService } from "@ddd/contexts/career/application/services/subject-plan.service";
-import { SubjectService } from "@ddd/contexts/career/application/services/subject.service";
-import { CommissionServiceImpl } from "@ddd/contexts/career/application/services/commission.service";
-import { DataSyncService } from "@ddd/contexts/career/application/services/data-sync.service";
+import { CareerService } from "@career/application/services/career.service";
+import { ClassroomService } from "@career/application/services/classroom.service";
+import { SubjectPlanService } from "@career/application/services/subject-plan.service";
+import { SubjectService } from "@career/application/services/subject.service";
+import { CommissionServiceImpl } from "@career/application/services/commission.service";
+import { DataSyncService } from "@career/application/services/data-sync.service";
 
-import { CareerRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/career.repository.impl";
-import { ClassroomRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/classroom.repository.impl";
-import { SubjectPlanRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/subject-plan.repository.impl";
-import { SubjectRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/subject.repository.impl";
-import { CommissionRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/commission.repository.impl";
-import { ItbaApiServiceImpl } from "@ddd/contexts/career/infrastructure/repositories/itba-api.service.impl";
+import { CareerRepositoryImpl } from "@career/infrastructure/repositories/career.repository.impl";
+import { ClassroomRepositoryImpl } from "@career/infrastructure/repositories/classroom.repository.impl";
+import { SubjectPlanRepositoryImpl } from "@career/infrastructure/repositories/subject-plan.repository.impl";
+import { SubjectRepositoryImpl } from "@career/infrastructure/repositories/subject.repository.impl";
+import { CommissionRepositoryImpl } from "@career/infrastructure/repositories/commission.repository.impl";
+import { ItbaApiServiceImpl } from "@career/infrastructure/gateway/itba-api/itba-api.service.impl";
 
-import { PrismaService } from "@/shared/database/prisma.service";
-import { CronService } from "@/shared/services/cron.service";
-import { ApiFactory } from "@/shared/external-apis";
+import { PrismaService } from "@boot/database/prisma.service";
+import { CronService } from "@boot/cron/cron.service";
+import { ApiFactory } from "@career/infrastructure/gateway/itba-api";
 
-import { WikiBookmarkController } from '../controllers/wiki-bookmark.controller';
-import { WikiBookmarkService } from '@ddd/contexts/career/application/services/wiki-bookmark.service';
+import { WikiBookmarkController } from '@career/web/controllers/wiki-bookmark.controller';
+import { WikiBookmarkService } from '@career/application/services/wiki-bookmark.service';
 
 import {
   CAREER_REPOSITORY,
@@ -33,7 +33,7 @@ import {
   SUBJECT_PLAN_REPOSITORY,
   COMMISSION_REPOSITORY,
   ITBA_API_SERVICE,
-} from "@/shared/constants/injection-tokens";
+} from "@boot/di/injection-tokens";
 
 @Module({
   controllers: [

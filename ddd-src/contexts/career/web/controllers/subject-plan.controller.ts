@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Query, Param, Body, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
-import { ResourceNotFoundException, ValidationException } from '@/shared/exceptions/domain.exceptions';
+import { ResourceNotFoundException, ValidationException } from '../../domain/exceptions/domain.exceptions';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { SubjectPlanQueryDto, CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
 import { SubjectPlanService } from '../../application/services/subject-plan.service';

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Query, Param, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
-import { ItbaMappers } from '@/shared/mappers/itba.mappers';
+import { ItbaMappers } from '../../infrastructure/mappers/itba.mappers';
 import { ClassroomQueryDto, ClassroomConflictDto } from '../dtos/classroom.dto';
 import { ClassroomService } from '../../application/services/classroom.service';
 

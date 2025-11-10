@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClassroomController } from './classroom.controller';
-import { ItbaMappers } from '@/shared/mappers/itba.mappers';
+import { ItbaMappers } from '../../infrastructure/mappers/itba.mappers';
 import { createTestClassroom, createTestClassroomSchedule, createTestTimeSlot } from 'test/utils/test-factories';
 import { DayOfWeek } from '../../domain/entity/classroom.model';
 import { ClassroomService } from '../../application/services/classroom.service';

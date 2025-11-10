@@ -4,7 +4,7 @@ import {
     ApiError, 
     RequestConfig, 
     ExternalApiConfig 
-} from '@/shared/external-apis/api-client.interface';
+} from './api-client.interface';
 
 export class FetchApiClient implements ApiClient {
     private readonly config: ExternalApiConfig;

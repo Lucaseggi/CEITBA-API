@@ -8,15 +8,15 @@ import { CommissionService } from "../../domain/interfaces/application/commissio
 import {
   ValidationException,
   ResourceNotFoundException,
-} from "@/shared/exceptions/domain.exceptions";
+} from "../../domain/exceptions/domain.exceptions";
 import {
   SUBJECT_PLAN_REPOSITORY,
   SUBJECT_REPOSITORY,
   ITBA_API_SERVICE,
   COMMISSION_REPOSITORY,
-} from "@/shared/constants/injection-tokens";
+} from "@boot/di/injection-tokens";
 import { CommissionRepository } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
-import { PrismaService } from "@/shared/database/prisma.service";
+import { PrismaService } from "@boot/database/prisma.service";
 import { CreateSubjectPlanDto } from "../dtos/subjectPlan.dto";
 import { CommissionDto, SectionSubjectsDto, SubjectDetailDto } from "../../web/dtos/subject-plan-response.dto";
 

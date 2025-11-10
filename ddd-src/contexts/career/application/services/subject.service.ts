@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Subject } from '../../domain/entity/subject.model';
 import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
 import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';
-import { SUBJECT_REPOSITORY } from '@/shared/constants/injection-tokens';
+import { SUBJECT_REPOSITORY } from '@boot/di/injection-tokens';
 import { CreateSubjectDto } from '../dtos/subject.dto';
 
 @Injectable()

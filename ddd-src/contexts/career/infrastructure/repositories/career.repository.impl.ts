@@ -1,8 +1,8 @@
 import { Career } from '../../domain/entity/career.model';
 import { CareerRepository } from '../../domain/interfaces/infrastructure/repositories/career.repository.interface';
 import { CareerAlreadyExistsException, CareerNotFoundException, ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
-import { GenericDomainException } from '@/shared/exceptions';
-import { PrismaService } from '@/shared/database/prisma.service';
+import { GenericDomainException } from '../../domain/exceptions';
+import { PrismaService } from '@boot/database/prisma.service';
 
 export class CareerRepositoryImpl implements CareerRepository {
     

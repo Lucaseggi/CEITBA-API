@@ -12,7 +12,7 @@ import {
   SUBJECT_PLAN_REPOSITORY,
   COMMISSION_REPOSITORY,
   ITBA_API_SERVICE,
-} from '@/shared/constants/injection-tokens';
+} from '@boot/di/injection-tokens';
 import {
   createTestSubject,
   createTestSubjectPlan,
