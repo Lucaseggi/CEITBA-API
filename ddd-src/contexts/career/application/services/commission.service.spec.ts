@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommissionServiceImpl } from './commission.service';
 import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
-import { COMMISSION_REPOSITORY } from 'src/shared/constants/injection-tokens';
+import { COMMISSION_REPOSITORY } from '@/shared/constants/injection-tokens';
 import { createTestCommission } from 'test/utils/test-factories';
 
 describe('CommissionServiceImpl', () => {

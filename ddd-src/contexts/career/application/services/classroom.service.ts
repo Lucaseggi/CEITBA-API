@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ClassroomSchedule, Classroom, TimeSlot, DayOfWeek, DayOfWeekMapper } from '../../domain/entity/classroom.model';
 import { ClassroomRepository } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
 import { ClassroomServiceInterface } from '../../domain/interfaces/application/classroom.service.interface';
-import { CLASSROOM_REPOSITORY } from 'src/shared/constants/injection-tokens';
+import { CLASSROOM_REPOSITORY } from '@/shared/constants/injection-tokens';
 
 @Injectable()
 export class ClassroomService implements ClassroomServiceInterface {

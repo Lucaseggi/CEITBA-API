@@ -16,8 +16,8 @@ import {
   ITBACourseCommission,
   ITBACourseCommissionTime,
 } from "../../domain/interfaces/infrastructure/repositories/itba-api.service.interface";
-import { ApiClient, ApiFactory } from "src/shared/external-apis";
-import { ExternalApiConfig } from "src/shared/external-apis/api-client.interface";
+import { ApiClient, ApiFactory } from "@/shared/external-apis";
+import { ExternalApiConfig } from "@/shared/external-apis/api-client.interface";
 
 export class ItbaApiServiceImpl implements ItbaApiService {
   private readonly apiClient: ApiClient;

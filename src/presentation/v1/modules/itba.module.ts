@@ -5,26 +5,26 @@ import { SubjectController } from "../controllers/subject.controller";
 import { SubjectPlanController } from "../controllers/subject-plan.controller";
 import { DataSyncController } from "../controllers/data-sync.controller";
 
-import { CareerService } from "@/domain/itba/services/career.service";
-import { ClassroomService } from "@/domain/itba/services/classroom.service";
-import { SubjectPlanService } from "@/domain/itba/services/subject-plan.service";
-import { SubjectService } from "@/domain/itba/services/subject.service";
-import { CommissionServiceImpl } from "@/domain/itba/services/commission.service";
-import { DataSyncService } from "@/domain/itba/services/data-sync.service";
+import { CareerService } from "@ddd/contexts/career/application/services/career.service";
+import { ClassroomService } from "@ddd/contexts/career/application/services/classroom.service";
+import { SubjectPlanService } from "@ddd/contexts/career/application/services/subject-plan.service";
+import { SubjectService } from "@ddd/contexts/career/application/services/subject.service";
+import { CommissionServiceImpl } from "@ddd/contexts/career/application/services/commission.service";
+import { DataSyncService } from "@ddd/contexts/career/application/services/data-sync.service";
 
-import { CareerRepositoryImpl } from "@/domain/itba/repositories/career.repository.impl";
-import { ClassroomRepositoryImpl } from "@/domain/itba/repositories/classroom.repository.impl";
-import { SubjectPlanRepositoryImpl } from "@/domain/itba/repositories/subject-plan.repository.impl";
-import { SubjectRepositoryImpl } from "@/domain/itba/repositories/subject.repository.impl";
-import { CommissionRepositoryImpl } from "@/domain/itba/repositories/commission.repository.impl";
-import { ItbaApiServiceImpl } from "@/domain/itba/repositories/itba-api.service.impl";
+import { CareerRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/career.repository.impl";
+import { ClassroomRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/classroom.repository.impl";
+import { SubjectPlanRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/subject-plan.repository.impl";
+import { SubjectRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/subject.repository.impl";
+import { CommissionRepositoryImpl } from "@ddd/contexts/career/infrastructure/repositories/commission.repository.impl";
+import { ItbaApiServiceImpl } from "@ddd/contexts/career/infrastructure/repositories/itba-api.service.impl";
 
 import { PrismaService } from "@/shared/database/prisma.service";
 import { CronService } from "@/shared/services/cron.service";
 import { ApiFactory } from "@/shared/external-apis";
 
 import { WikiBookmarkController } from '../controllers/wiki-bookmark.controller';
-import { WikiBookmarkService } from '@/domain/itba/services/wiki-bookmark.service';
+import { WikiBookmarkService } from '@ddd/contexts/career/application/services/wiki-bookmark.service';
 
 import {
   CAREER_REPOSITORY,

@@ -80,6 +80,26 @@ export class DayOfWeekMapper {
     }
 
     /**
+     * Convert a string to DayOfWeek or return null on invalid input.
+     * Never throws.
+     */
+    public static fromStringOrNull(day: string | null | undefined): DayOfWeek | null {
+        if (day === null || day === undefined || day === '') {
+            return null;
+        }
+
+        const normalized = day.toLowerCase();
+        const value = this.dayMap[normalized];
+
+        if (!value) {
+            return null;
+        }
+
+        return value;
+    }
+
+
+    /**
      * Convert DayOfWeek enum to uppercase format (MONDAY)
      */
     public static toUppercase(day: DayOfWeek): string {

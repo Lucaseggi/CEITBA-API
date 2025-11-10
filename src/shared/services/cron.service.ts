@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { DataSyncService } from "@/domain/itba/services/data-sync.service";
+import { DataSyncService } from "@ddd/contexts/career/application/services/data-sync.service";
 
 @Injectable()
 export class CronService {
