@@ -1,6 +1,6 @@
 import { ClassroomSchedule } from "../../../entity/classroom.model";
 
-export interface ClassroomRepository {
+export interface ClassroomRepositoryInterface {
     findAllClassrooms(): Promise<ClassroomSchedule[]>;
     findOccupiedClassrooms(currentSemester?: boolean): Promise<ClassroomSchedule[]>;
     findByBuilding(building: string): Promise<ClassroomSchedule[]>;

@@ -2,13 +2,13 @@ import { Controller, Get, Post, Put, Delete, Query, Param, Body, HttpCode, HttpS
 import { ResourceNotFoundException, ValidationException } from '../../domain/exceptions/domain.exceptions';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { SubjectPlanQueryDto, CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
-import { SubjectPlanService } from '../../application/services/subject-plan.service';
+import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
 import { ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 
 @ApiTags('Subject by plan')
 @Controller('v1/plans')
 export class SubjectPlanController {
-    constructor(private readonly subjectPlanService: SubjectPlanService) { }
+    constructor(private readonly subjectPlanService: SubjectPlanServiceInterface) { }
 
     @Get(':planId/subjects')
     @ApiOperation({ summary: 'Get subjects by plan with filters' })

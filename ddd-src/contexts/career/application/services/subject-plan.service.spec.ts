@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SubjectPlanService } from './subject-plan.service';
-import { SubjectPlanRepository } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
-import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
-import { ItbaApiService } from '../../domain/interfaces/infrastructure/repositories/itba-api.service.interface';
-import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
+import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
+import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
+import { ItbaApiServiceInterface } from '../../domain/interfaces/infrastructure/gateway/itba-api.service.interface';
+import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import {
   SUBJECT_PLAN_REPOSITORY,
   SUBJECT_REPOSITORY,
@@ -15,13 +15,13 @@ import { createTestSubjectPlan, createTestSubject, createTestCommission } from '
 
 describe('SubjectPlanService', () => {
   let service: SubjectPlanService;
-  let subjectPlanRepository: jest.Mocked<SubjectPlanRepository>;
-  let subjectRepository: jest.Mocked<SubjectRepository>;
-  let itbaApiService: jest.Mocked<ItbaApiService>;
-  let commissionRepository: jest.Mocked<CommissionRepository>;
+  let subjectPlanRepository: jest.Mocked<SubjectPlanRepositoryInterface>;
+  let subjectRepository: jest.Mocked<SubjectRepositoryInterface>;
+  let itbaApiService: jest.Mocked<ItbaApiServiceInterface>;
+  let commissionRepository: jest.Mocked<CommissionRepositoryInterface>;
 
   beforeEach(async () => {
-    const mockSubjectPlanRepository: jest.Mocked<Partial<SubjectPlanRepository>> = {
+    const mockSubjectPlanRepository: jest.Mocked<Partial<SubjectPlanRepositoryInterface>> = {
       findByPlanId: jest.fn(),
       findBySubjectId: jest.fn(),
       findByPlanAndSubject: jest.fn(),
@@ -35,16 +35,16 @@ describe('SubjectPlanService', () => {
       findAll: jest.fn(),
     };
 
-    const mockSubjectRepository: jest.Mocked<Partial<SubjectRepository>> = {
+    const mockSubjectRepository: jest.Mocked<Partial<SubjectRepositoryInterface>> = {
       findById: jest.fn(),
       findByIds: jest.fn(),
     };
 
-    const mockItbaApiService: jest.Mocked<Partial<ItbaApiService>> = {
+    const mockItbaApiService: jest.Mocked<Partial<ItbaApiServiceInterface>> = {
       getSubjectsByPlan: jest.fn(),
     };
 
-    const mockCommissionRepository: jest.Mocked<Partial<CommissionRepository>> = {
+    const mockCommissionRepository: jest.Mocked<Partial<CommissionRepositoryInterface>> = {
       findAll: jest.fn(),
     };
 

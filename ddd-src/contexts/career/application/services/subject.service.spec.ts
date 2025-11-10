@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SubjectService } from './subject.service';
 import { SUBJECT_REPOSITORY } from '@boot/di/injection-tokens';
 import { createTestSubject } from 'test/utils/test-factories';
-import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
+import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
 import { Subject } from '../../domain/entity/subject.model';
 
 describe('SubjectService', () => {
   let service: SubjectService;
-  let repository: jest.Mocked<SubjectRepository>;
+  let repository: jest.Mocked<SubjectRepositoryInterface>;
 
   beforeEach(async () => {
-    const mockRepository: jest.Mocked<SubjectRepository> = {
+    const mockRepository: jest.Mocked<SubjectRepositoryInterface> = {
       findAll: jest.fn(),
       findById: jest.fn(),
       findByName: jest.fn(),

@@ -3,18 +3,18 @@ import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/
 import { ItbaMappers } from '../../infrastructure/mappers/itba.mappers';
 import { SubjectResponseDto } from '../dtos/subject.dto';
 import { SectionSubjectsDto } from '../dtos/subject-plan-response.dto';
-import { SubjectService } from '../../application/services/subject.service';
-import { SubjectPlanService } from '../../application/services/subject-plan.service';
+import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';
+import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
 
 @ApiTags('Subjects')
 @Controller('v1/itba/subjects')
 export class SubjectController {
     constructor(
-        private readonly subjectService: SubjectService,
-        private readonly subjectPlanService: SubjectPlanService
+        private readonly subjectService: SubjectServiceInterface,
+        private readonly subjectPlanService: SubjectPlanServiceInterface
     ) { }
 
-    @Get()
+    @Get() 
     @ApiOperation({ summary: 'Get subjects organized by plan' })
     @ApiQuery({ name: 'plan', description: 'Plan identifier (e.g. S10-Rev23)', required: true })
     @ApiResponse({ status: 200, description: 'Subjects organized by section, year, and semester', type: SectionSubjectsDto })

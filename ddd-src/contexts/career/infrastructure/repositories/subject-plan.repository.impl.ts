@@ -1,11 +1,11 @@
 import { SubjectPlan } from '../../domain/entity/subject-plan.model';
 import { Subject } from '../../domain/entity/subject.model';
-import { SubjectPlanRepository } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
+import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { SubjectPlanNotFoundException, SubjectPlanAlreadyExistsException, ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 import { GenericDomainException, ResourceNotFoundException } from '../../domain/exceptions/domain.exceptions';
 import { PrismaService } from '@boot/database/prisma.service';
 
-export class SubjectPlanRepositoryImpl implements SubjectPlanRepository {
+export class SubjectPlanRepositoryImpl implements SubjectPlanRepositoryInterface {
     private readonly prisma: PrismaService;
 
     constructor(prisma: PrismaService) {

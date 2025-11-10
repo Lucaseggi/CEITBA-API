@@ -2,12 +2,12 @@ import { Controller, Get, Post, Query, Param, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { ItbaMappers } from '../../infrastructure/mappers/itba.mappers';
 import { ClassroomQueryDto, ClassroomConflictDto } from '../dtos/classroom.dto';
-import { ClassroomService } from '../../application/services/classroom.service';
+import { ClassroomServiceInterface } from '../../domain/interfaces/application/classroom.service.interface';
 
 @ApiTags('Classrooms')
 @Controller('v1/classrooms')
 export class ClassroomController {
-    constructor(private readonly classroomService: ClassroomService) {}
+    constructor(private readonly classroomService: ClassroomServiceInterface) {}
 
     @Get()
     @ApiOperation({ summary: 'Get classrooms with filters' })

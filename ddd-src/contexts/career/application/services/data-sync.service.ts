@@ -3,13 +3,13 @@ import { Subject } from "../../domain/entity/subject.model";
 import { SubjectPlan } from "../../domain/entity/subject-plan.model";
 import { Commission } from "../../domain/entity/commission.model";
 import {
-  ItbaApiService,
+  ItbaApiServiceInterface,
   CommissionQueryParams,
-} from "../../domain/interfaces/application/itba-api.service.interface";
-import { SubjectRepository } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
-import { SubjectPlanRepository } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
-import { CommissionRepository } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
-import { CareerRepository } from "../../domain/interfaces/infrastructure/repositories/career.repository.interface";
+} from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
+import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
+import { SubjectPlanRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
+import { CommissionRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
+import { CareerRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/career.repository.interface";
 import {
   CAREER_REPOSITORY,
   SUBJECT_REPOSITORY,
@@ -48,15 +48,15 @@ export class DataSyncService {
 
   constructor(
     @Inject(ITBA_API_SERVICE)
-    private readonly itbaApiService: ItbaApiService,
+    private readonly itbaApiService: ItbaApiServiceInterface,
     @Inject(SUBJECT_REPOSITORY)
-    private readonly subjectRepository: SubjectRepository,
+    private readonly subjectRepository: SubjectRepositoryInterface,
     @Inject(SUBJECT_PLAN_REPOSITORY)
-    private readonly subjectPlanRepository: SubjectPlanRepository,
+    private readonly subjectPlanRepository: SubjectPlanRepositoryInterface,
     @Inject(COMMISSION_REPOSITORY)
-    private readonly commissionRepository: CommissionRepository,
+    private readonly commissionRepository: CommissionRepositoryInterface,
     @Inject(CAREER_REPOSITORY)
-    private readonly careerRepository: CareerRepository,
+    private readonly careerRepository: CareerRepositoryInterface,
   ) {}
 
   async syncAllData(options?: DataSyncOptions): Promise<DataSyncResult> {

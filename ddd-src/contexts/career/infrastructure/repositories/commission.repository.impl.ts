@@ -1,10 +1,10 @@
 import { Commission, CommissionTime, SubjectType, DayOfWeek } from '../../domain/entity/commission.model';
-import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
+import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import { GenericDomainException } from '../../domain/exceptions';
 import { PrismaService } from '@boot/database/prisma.service';
 import { DayOfWeek as PrismaDayOfWeek } from '@prisma/client';
 
-export class CommissionRepositoryImpl implements CommissionRepository {
+export class CommissionRepositoryImpl implements CommissionRepositoryInterface {
     private readonly prisma: PrismaService;
 
     constructor(prisma: PrismaService) {
