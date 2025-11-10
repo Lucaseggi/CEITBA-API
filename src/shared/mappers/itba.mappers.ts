@@ -1,16 +1,12 @@
-import { Career } from "@/domain/itba/models/career.model";
-import { Subject } from "@/domain/itba/models/subject.model";
-import { SubjectPlan } from "@/domain/itba/models/subject-plan.model";
-import { ClassroomSchedule } from "@/domain/itba/models/classroom.model";
-import { CareerDto } from "@/domain/itba/dto/career.dto";
-import { SubjectDto } from "@/domain/itba/dto/subject.dto";
-import { SubjectPlanDto } from "@/domain/itba/dto/subjectPlan.dto";
-import {
-  ClassroomDto,
-  ClassroomScheduleDto,
-  ClassroomsByBuildingDto,
-  ClassroomsByDayAndBuildingDto,
-} from "@/domain/itba/dto/classroom.dto";
+
+import { CareerDto } from "ddd-src/contexts/career/application/dtos/career.dto";
+import { ClassroomDto, ClassroomsByBuildingDto, ClassroomsByDayAndBuildingDto, ClassroomScheduleDto } from "ddd-src/contexts/career/application/dtos/classroom.dto";
+import { SubjectDto } from "ddd-src/contexts/career/application/dtos/subject.dto";
+import { SubjectPlanDto } from "ddd-src/contexts/career/application/dtos/subjectPlan.dto";
+import { Career } from "ddd-src/contexts/career/domain/entity/career.model";
+import { ClassroomSchedule } from "ddd-src/contexts/career/domain/entity/classroom.model";
+import { SubjectPlan } from "ddd-src/contexts/career/domain/entity/subject-plan.model";
+import { Subject } from "ddd-src/contexts/career/domain/entity/subject.model";
 
 export class ItbaMappers {
   static careerToDto(career: Career): CareerDto {

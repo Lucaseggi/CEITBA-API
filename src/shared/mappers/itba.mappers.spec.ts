@@ -1,5 +1,5 @@
+import { DayOfWeek } from '../types/day-of-week.types';
 import { ItbaMappers } from './itba.mappers';
-import { DayOfWeek, TimeSlot } from '@/domain/itba/models/classroom.model';
 import {
   createTestSubject,
   createTestCareer,
@@ -7,7 +7,7 @@ import {
   createTestClassroom,
   createTestClassroomSchedule,
   createTestTimeSlot,
-} from '../../../test/utils/test-factories';
+} from 'test/utils/test-factories';
 
 describe('ItbaMappers', () => {
   describe('careerToDto', () => {

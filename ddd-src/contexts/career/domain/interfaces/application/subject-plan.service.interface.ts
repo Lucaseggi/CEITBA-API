@@ -1,0 +1,32 @@
+import { CreateSubjectPlanDto } from "ddd-src/contexts/career/application/dtos/subjectPlan.dto";
+import { SubjectPlan } from "../../entity/subject-plan.model";
+import { SectionSubjectsDto } from "ddd-src/contexts/career/web/dtos/subject-plan-response.dto";
+
+export interface SubjectPlanServiceInterface {
+    getSubjectsByPlan(planId: string): Promise<SubjectPlan[]>;
+    getSubjectsByPlanWithFilters(
+        planId: string,
+        filters: {
+            year?: number;
+            semester?: number;
+            section?: string;
+            type?: 'elective'; // TODO: Make this a type
+        }
+    ): Promise<SubjectPlan[]>;
+    getSubjectsByPlanFromApi(planId: string): Promise<SubjectPlan[]>;
+    getSubjectPlansBySubject(subjectId: string): Promise<SubjectPlan[]>;
+    getSubjectPlan(planId: string, subjectId: string): Promise<SubjectPlan | null>;
+    createSubjectPlan(createSubjectPlanDto: CreateSubjectPlanDto): Promise<SubjectPlan>;
+    updateSubjectPlan(
+        planId: string,
+        subjectId: string,
+        updateData: Partial<CreateSubjectPlanDto>
+    ): Promise<SubjectPlan | null>;
+    deleteSubjectPlan(planId: string, subjectId: string): Promise<boolean>;
+    getSubjectsBySection(planId: string, section: string): Promise<SubjectPlan[]>;
+    getElectiveSubjects(planId: string): Promise<SubjectPlan[]>;
+    getSubjectsByYear(planId: string, year: number): Promise<SubjectPlan[]>;
+    getSubjectsBySemester(planId: string, year: number, semester: number): Promise<SubjectPlan[]>;
+    getSubjectDependencies(planId: string, subjectId: string): Promise<SubjectPlan[]>;
+    getSubjectsByPlanOrganized(planId: string): Promise<SectionSubjectsDto>;
+}

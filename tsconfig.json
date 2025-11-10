@@ -23,9 +23,9 @@
       "strictFunctionTypes": false,
       "noImplicitReturns": false,
       "paths": {
-        "@/*": ["./src/*"]
+        "@/*": ["src/*"],
+        "test/*": ["test/*"]
       }
     },
-    "include": ["src/**/*.ts"],
     "exclude": ["node_modules", "dist"]
   }

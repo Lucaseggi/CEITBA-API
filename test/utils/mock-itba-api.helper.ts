@@ -1,10 +1,12 @@
-import { Subject } from '@/domain/itba/models/subject.model';
-import { SubjectPlan } from '@/domain/itba/models/subject-plan.model';
-import { Commission, CommissionTime, SubjectType, DayOfWeek } from '@/domain/itba/models/commission.model';
 
 /**
  * Mock ITBA API response helpers for testing data sync functionality
  */
+
+import { DayOfWeek } from "@/shared/types/day-of-week.types";
+import { Commission, CommissionTime, SubjectType } from "ddd-src/contexts/career/domain/entity/commission.model";
+import { SubjectPlan } from "ddd-src/contexts/career/domain/entity/subject-plan.model";
+import { Subject } from "ddd-src/contexts/career/domain/entity/subject.model";
 
 /**
  * Create mock subject data that would come from ITBA API

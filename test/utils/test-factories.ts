@@ -1,9 +1,9 @@
-import { Subject } from '@/domain/itba/models/subject.model';
-import { Career } from '@/domain/itba/models/career.model';
-import { Classroom, ClassroomSchedule, TimeSlot } from '@/domain/itba/models/classroom.model';
-import { SubjectPlan } from '@/domain/itba/models/subject-plan.model';
-import { Commission, CommissionTime, SubjectType } from '@/domain/itba/models/commission.model';
 import { DayOfWeek } from '@/shared/types/day-of-week.types';
+import { Career } from 'ddd-src/contexts/career/domain/entity/career.model';
+import { Classroom, ClassroomSchedule, TimeSlot } from 'ddd-src/contexts/career/domain/entity/classroom.model';
+import { Commission, CommissionTime, SubjectType } from 'ddd-src/contexts/career/domain/entity/commission.model';
+import { SubjectPlan } from 'ddd-src/contexts/career/domain/entity/subject-plan.model';
+import { Subject } from 'ddd-src/contexts/career/domain/entity/subject.model';
 
 /**
  * Factory functions for creating test domain models
