@@ -1,14 +1,14 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { Commission } from "../../domain/entity/commission.model";
 import { CommissionService } from "../../domain/interfaces/application/commission.service.interface";
-import { CommissionRepository } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
+import { CommissionRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
 import { COMMISSION_REPOSITORY } from "../../../../../src/shared/constants/injection-tokens";
 
 @Injectable()
 export class CommissionServiceImpl implements CommissionService {
   constructor(
     @Inject(COMMISSION_REPOSITORY)
-    private readonly commissionRepository: CommissionRepository,
+    private readonly commissionRepository: CommissionRepositoryInterface,
   ) {}
 
   async getAllCommissions(): Promise<Commission[]> {

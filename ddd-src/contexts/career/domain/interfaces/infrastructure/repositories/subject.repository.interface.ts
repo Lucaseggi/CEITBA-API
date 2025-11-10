@@ -1,6 +1,6 @@
 import { Subject } from "../../../entity/subject.model";
 
-export interface SubjectRepository {
+export interface SubjectRepositoryInterface {
     findAll(): Promise<Subject[]>;
     findById(id: string): Promise<Subject | null>;
     findByName(name: string): Promise<Subject[]>;

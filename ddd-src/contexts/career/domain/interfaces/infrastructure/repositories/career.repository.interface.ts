@@ -1,6 +1,6 @@
 import { Career } from '../../../../domain/entity/career.model';
 
-export interface CareerRepository {
+export interface CareerRepositoryInterface {
     findAll(): Promise<Career[]>;
     findById(id: string): Promise<Career | null>;
     findByName(name: string): Promise<Career | null>;

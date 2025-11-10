@@ -1,8 +1,8 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { SubjectPlan } from "../../domain/entity/subject-plan.model";
-import { SubjectPlanRepository } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
-import { SubjectRepository } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
-import { ItbaApiService } from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
+import { SubjectPlanRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
+import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
+import { ItbaApiServiceInterface } from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
 import { SubjectPlanServiceInterface } from "../../domain/interfaces/application/subject-plan.service.interface";
 import { CommissionService } from "../../domain/interfaces/application/commission.service.interface";
 import {
@@ -15,7 +15,7 @@ import {
   ITBA_API_SERVICE,
   COMMISSION_REPOSITORY,
 } from "@/shared/constants/injection-tokens";
-import { CommissionRepository } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
+import { CommissionRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
 import { PrismaService } from "@/shared/database/prisma.service";
 import { CreateSubjectPlanDto } from "../dtos/subjectPlan.dto";
 import { CommissionDto, SectionSubjectsDto, SubjectDetailDto } from "../../web/dtos/subject-plan-response.dto";
@@ -24,12 +24,12 @@ import { CommissionDto, SectionSubjectsDto, SubjectDetailDto } from "../../web/d
 export class SubjectPlanService implements SubjectPlanServiceInterface {
   constructor(
     @Inject(SUBJECT_PLAN_REPOSITORY)
-    private readonly subjectPlanRepository: SubjectPlanRepository,
+    private readonly subjectPlanRepository: SubjectPlanRepositoryInterface,
     @Inject(SUBJECT_REPOSITORY)
-    private readonly subjectRepository: SubjectRepository,
-    @Inject(ITBA_API_SERVICE) private readonly itbaApiService: ItbaApiService,
+    private readonly subjectRepository: SubjectRepositoryInterface,
+    @Inject(ITBA_API_SERVICE) private readonly itbaApiService: ItbaApiServiceInterface,
     @Inject(COMMISSION_REPOSITORY)
-    private readonly commissionRepository: CommissionRepository,
+    private readonly commissionRepository: CommissionRepositoryInterface,
   ) {}
 
   async getSubjectsByPlan(planId: string): Promise<SubjectPlan[]> {

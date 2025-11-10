@@ -4,11 +4,11 @@ import {
   ForeignKeyConstraintViolationException,
 } from "../../domain/exceptions/itba.exceptions";
 import { PrismaService } from "@/shared/database/prisma.service";
-import { SubjectRepository } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
+import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
 import { Subject } from "../../domain/entity/subject.model";
 import { GenericDomainException } from "@/shared/exceptions/domain.exceptions";
 
-export class SubjectRepositoryImpl implements SubjectRepository {
+export class SubjectRepositoryImpl implements SubjectRepositoryInterface {
   private readonly prisma: PrismaService;
 
   constructor(prisma: PrismaService) {

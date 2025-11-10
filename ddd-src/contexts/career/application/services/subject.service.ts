@@ -1,13 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Subject } from '../../domain/entity/subject.model';
-import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
+import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
 import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';
 import { SUBJECT_REPOSITORY } from '@/shared/constants/injection-tokens';
 import { CreateSubjectDto } from '../dtos/subject.dto';
 
 @Injectable()
 export class SubjectService implements SubjectServiceInterface {
-    constructor(@Inject(SUBJECT_REPOSITORY) private readonly subjectRepository: SubjectRepository) {}
+    constructor(@Inject(SUBJECT_REPOSITORY) private readonly subjectRepository: SubjectRepositoryInterface) {}
 
     async getAllSubjects(): Promise<Subject[]> {
         return await this.subjectRepository.findAll();

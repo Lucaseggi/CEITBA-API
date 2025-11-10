@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClassroomSchedule, Classroom, TimeSlot, DayOfWeek, DayOfWeekMapper } from '../../domain/entity/classroom.model';
-import { ClassroomRepository } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
+import { ClassroomRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
 import { ClassroomServiceInterface } from '../../domain/interfaces/application/classroom.service.interface';
 import { CLASSROOM_REPOSITORY } from '@/shared/constants/injection-tokens';
 
 @Injectable()
 export class ClassroomService implements ClassroomServiceInterface {
-    constructor(@Inject(CLASSROOM_REPOSITORY) private readonly classroomRepository: ClassroomRepository) {}
+    constructor(@Inject(CLASSROOM_REPOSITORY) private readonly classroomRepository: ClassroomRepositoryInterface) {}
 
     async getAllClassrooms(): Promise<ClassroomSchedule[]> {
         return await this.classroomRepository.findAllClassrooms();

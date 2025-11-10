@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommissionServiceImpl } from './commission.service';
-import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
+import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import { COMMISSION_REPOSITORY } from '@/shared/constants/injection-tokens';
 import { createTestCommission } from 'test/utils/test-factories';
 
 describe('CommissionServiceImpl', () => {
   let service: CommissionServiceImpl;
-  let repository: jest.Mocked<CommissionRepository>;
+  let repository: jest.Mocked<CommissionRepositoryInterface>;
 
   beforeEach(async () => {
-    const mockRepository: jest.Mocked<CommissionRepository> = {
+    const mockRepository: jest.Mocked<CommissionRepositoryInterface> = {
       findAll: jest.fn(),
       findById: jest.fn(),
       findBySubjectCode: jest.fn(),

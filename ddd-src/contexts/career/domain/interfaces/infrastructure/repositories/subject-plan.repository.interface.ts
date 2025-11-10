@@ -1,6 +1,6 @@
 import { SubjectPlan } from "../../../entity/subject-plan.model";
 
-export interface SubjectPlanRepository {
+export interface SubjectPlanRepositoryInterface {
     findAll(): Promise<SubjectPlan[]>;
     findByPlanId(planId: string): Promise<SubjectPlan[]>;
     findBySubjectId(subjectId: string): Promise<SubjectPlan[]>;

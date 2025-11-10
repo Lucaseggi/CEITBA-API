@@ -7,7 +7,7 @@ import {
   DayOfWeek,
 } from "../../domain/entity/commission.model";
 import {
-  ItbaApiService,
+  ItbaApiServiceInterface,
   CommissionQueryParams,
   ITBACareerPlans,
   ITBASection,
@@ -19,7 +19,7 @@ import {
 import { ApiClient, ApiFactory } from "@/shared/external-apis";
 import { ExternalApiConfig } from "@/shared/external-apis/api-client.interface";
 
-export class ItbaApiServiceImpl implements ItbaApiService {
+export class ItbaApiServiceImpl implements ItbaApiServiceInterface {
   private readonly apiClient: ApiClient;
   private readonly apiToken: string;
 

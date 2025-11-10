@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CareerService } from './career.service';
-import { CareerRepository } from '../../domain/interfaces/infrastructure/repositories/career.repository.interface';
+import { CareerRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/career.repository.interface';
 import { Career } from '../../domain/entity/career.model';
 import { CAREER_REPOSITORY } from '@/shared/constants/injection-tokens';
 import { createTestCareer } from 'test/utils/test-factories';
 
 describe('CareerService', () => {
   let service: CareerService;
-  let repository: jest.Mocked<CareerRepository>;
+  let repository: jest.Mocked<CareerRepositoryInterface>;
 
   beforeEach(async () => {
-    const mockRepository: jest.Mocked<CareerRepository> = {
+    const mockRepository: jest.Mocked<CareerRepositoryInterface> = {
       findAll: jest.fn(),
       findById: jest.fn(),
       findByName: jest.fn(),

@@ -1,6 +1,6 @@
 import { Commission } from "../../../entity/commission.model";
 
-export interface CommissionRepository {
+export interface CommissionRepositoryInterface {
     findAll(): Promise<Commission[]>;
     findById(id: string): Promise<Commission | null>;
     findBySubjectCode(subjectCode: string): Promise<Commission[]>;

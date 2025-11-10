@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClassroomService } from './classroom.service';
-import { ClassroomRepository } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
+import { ClassroomRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
 import { ClassroomSchedule, DayOfWeek } from '../../domain/entity/classroom.model';
 import { CLASSROOM_REPOSITORY } from '@/shared/constants/injection-tokens';
 import { createTestClassroom, createTestClassroomSchedule, createTestTimeSlot } from 'test/utils/test-factories';
 
 describe('ClassroomService', () => {
   let service: ClassroomService;
-  let repository: jest.Mocked<ClassroomRepository>;
+  let repository: jest.Mocked<ClassroomRepositoryInterface>;
 
   beforeEach(async () => {
-    const mockRepository: jest.Mocked<ClassroomRepository> = {
+    const mockRepository: jest.Mocked<ClassroomRepositoryInterface> = {
       findAllClassrooms: jest.fn(),
       findOccupiedClassrooms: jest.fn(),
       findByBuilding: jest.fn(),

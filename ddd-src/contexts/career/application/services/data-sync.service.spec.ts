@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { DataSyncService, DataSyncResult } from './data-sync.service';
-import { ItbaApiService } from '../../domain/interfaces/infrastructure/gateway/itba-api.service.interface';
-import { SubjectRepository } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
-import { SubjectPlanRepository } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
-import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
-import { CareerRepository } from '../../domain/interfaces/infrastructure/repositories/career.repository.interface';
+import { ItbaApiServiceInterface } from '../../domain/interfaces/infrastructure/gateway/itba-api.service.interface';
+import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
+import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
+import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
+import { CareerRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/career.repository.interface';
 import {
   CAREER_REPOSITORY,
   SUBJECT_REPOSITORY,
@@ -22,38 +22,38 @@ import {
 
 describe('DataSyncService', () => {
   let service: DataSyncService;
-  let itbaApiService: jest.Mocked<ItbaApiService>;
-  let subjectRepository: jest.Mocked<SubjectRepository>;
-  let subjectPlanRepository: jest.Mocked<SubjectPlanRepository>;
-  let commissionRepository: jest.Mocked<CommissionRepository>;
-  let careerRepository: jest.Mocked<CareerRepository>;
+  let itbaApiService: jest.Mocked<ItbaApiServiceInterface>;
+  let subjectRepository: jest.Mocked<SubjectRepositoryInterface>;
+  let subjectPlanRepository: jest.Mocked<SubjectPlanRepositoryInterface>;
+  let commissionRepository: jest.Mocked<CommissionRepositoryInterface>;
+  let careerRepository: jest.Mocked<CareerRepositoryInterface>;
 
   beforeEach(async () => {
-    const mockItbaApiService: Partial<ItbaApiService> = {
+    const mockItbaApiService: Partial<ItbaApiServiceInterface> = {
       getSubjectsByPlan: jest.fn(),
       getCommissions: jest.fn(),
       getCommissionsBySubject: jest.fn(),
     };
 
-    const mockSubjectRepository: Partial<SubjectRepository> = {
+    const mockSubjectRepository: Partial<SubjectRepositoryInterface> = {
       findAll: jest.fn(),
       findById: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     };
 
-    const mockSubjectPlanRepository: Partial<SubjectPlanRepository> = {
+    const mockSubjectPlanRepository: Partial<SubjectPlanRepositoryInterface> = {
       findByPlanAndSubject: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     };
 
-    const mockCommissionRepository: Partial<CommissionRepository> = {
+    const mockCommissionRepository: Partial<CommissionRepositoryInterface> = {
       findById: jest.fn(),
       upsert: jest.fn(),
     };
 
-    const mockCareerRepository: Partial<CareerRepository> = {
+    const mockCareerRepository: Partial<CareerRepositoryInterface> = {
       findCareersWithPlans: jest.fn(),
     };
 
