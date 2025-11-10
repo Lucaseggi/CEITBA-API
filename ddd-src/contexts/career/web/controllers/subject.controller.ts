@@ -1,17 +1,18 @@
-import { Controller, Get, Param, Query, NotFoundException } from '@nestjs/common';
+import { Inject,  Controller, Get, Param, Query, NotFoundException } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ItbaMappers } from '../../infrastructure/mappers/itba.mappers';
 import { SubjectResponseDto } from '../dtos/subject.dto';
 import { SectionSubjectsDto } from '../dtos/subject-plan-response.dto';
 import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';
+import { SUBJECT_SERVICE, SUBJECT_PLAN_SERVICE } from '@boot/di/injection-tokens';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
 
 @ApiTags('Subjects')
 @Controller('v1/itba/subjects')
 export class SubjectController {
     constructor(
-        private readonly subjectService: SubjectServiceInterface,
-        private readonly subjectPlanService: SubjectPlanServiceInterface
+        @Inject(SUBJECT_SERVICE) private readonly subjectService: SubjectServiceInterface,
+        @Inject(SUBJECT_PLAN_SERVICE) private readonly subjectPlanService: SubjectPlanServiceInterface
     ) { }
 
     @Get() 

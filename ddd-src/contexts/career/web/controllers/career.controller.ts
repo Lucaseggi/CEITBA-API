@@ -1,12 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { CreateCareerDto, UpdateCareerDto } from '../dtos/career.dto';
 import { CareerServiceInterface } from '../../domain/interfaces/application/career.service.interface';
+import { CAREER_SERVICE } from '@boot/di/injection-tokens';
 
 @ApiTags('Careers')
 @Controller('v1/careers')
 export class CareerController {
-    constructor(private readonly careerService: CareerServiceInterface) {}
+    constructor(@Inject(CAREER_SERVICE) private readonly careerService: CareerServiceInterface) {}
 
     @Get('plans')
     @ApiOperation({ summary: 'Get careers with their plans' })

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommissionServiceImpl } from './commission.service';
-import { CommissionRepository } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import { createTestCommission } from 'test/utils/test-factories';
+import { COMMISSION_REPOSITORY } from '@boot/di/injection-tokens';
 
 describe('CommissionServiceImpl', () => {
   let service: CommissionServiceImpl;

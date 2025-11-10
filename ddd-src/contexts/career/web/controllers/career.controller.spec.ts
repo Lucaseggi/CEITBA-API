@@ -1,11 +1,11 @@
 import { NotFoundException } from '@nestjs/common';
 import { CareerController } from './career.controller';
-import { CareerServiceInterface } from '../../domain/interfaces/application/career.service.interface';
+import { CareerService } from '../../application/services/career.service';
 import { createTestCareer } from 'test/utils/test-factories';
 
 describe('CareerController', () => {
   let controller: CareerController;
-  let service: jest.Mocked<CareerServiceInterface>;
+  let service: jest.Mocked<CareerService>;
   beforeEach(() => {
     service = {
       getAllCareers: jest.fn(),
@@ -16,7 +16,7 @@ describe('CareerController', () => {
       getCareersWithPlans: jest.fn(),
       addPlanToCareer: jest.fn(),
       removePlanFromCareer: jest.fn(),
-    } as unknown as jest.Mocked<CareerServiceInterface>;
+    } as unknown as jest.Mocked<CareerService>;
 
     controller = new CareerController(service); 
   });

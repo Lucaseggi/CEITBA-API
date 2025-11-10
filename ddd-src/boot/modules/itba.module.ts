@@ -23,9 +23,6 @@ import { PrismaService } from "@boot/database/prisma.service";
 import { CronService } from "@boot/cron/cron.service";
 import { ApiFactory } from "@career/infrastructure/gateway/itba-api";
 
-import { WikiBookmarkController } from '@career/web/controllers/wiki-bookmark.controller';
-import { WikiBookmarkService } from '@career/application/services/wiki-bookmark.service';
-
 import {
   CAREER_REPOSITORY,
   CLASSROOM_REPOSITORY,
@@ -33,6 +30,11 @@ import {
   SUBJECT_PLAN_REPOSITORY,
   COMMISSION_REPOSITORY,
   ITBA_API_SERVICE,
+  CAREER_SERVICE,
+  CLASSROOM_SERVICE,
+  SUBJECT_SERVICE,
+  SUBJECT_PLAN_SERVICE,
+  COMMISSION_SERVICE,
 } from "@boot/di/injection-tokens";
 
 @Module({
@@ -42,18 +44,33 @@ import {
     SubjectController,
     SubjectPlanController,
     DataSyncController,
-    WikiBookmarkController
   ],
   providers: [
     PrismaService,
-    CareerService,
-    ClassroomService,
-    SubjectService,
-    SubjectPlanService,
-    CommissionServiceImpl,
     DataSyncService,
     CronService,
-    WikiBookmarkService,
+
+    // Services with DI tokens
+    {
+      provide: CAREER_SERVICE,
+      useClass: CareerService,
+    },
+    {
+      provide: CLASSROOM_SERVICE,
+      useClass: ClassroomService,
+    },
+    {
+      provide: SUBJECT_SERVICE,
+      useClass: SubjectService,
+    },
+    {
+      provide: SUBJECT_PLAN_SERVICE,
+      useClass: SubjectPlanService,
+    },
+    {
+      provide: COMMISSION_SERVICE,
+      useClass: CommissionServiceImpl,
+    },
 
     {
       provide: CAREER_REPOSITORY,
@@ -110,14 +127,13 @@ import {
     },
   ],
   exports: [
-    CareerService,
-    ClassroomService,
-    SubjectService,
-    SubjectPlanService,
-    CommissionServiceImpl,
+    CAREER_SERVICE,
+    CLASSROOM_SERVICE,
+    SUBJECT_SERVICE,
+    SUBJECT_PLAN_SERVICE,
+    COMMISSION_SERVICE,
     DataSyncService,
     CronService,
-    WikiBookmarkService
   ],
 })
 export class ItbaModule { }

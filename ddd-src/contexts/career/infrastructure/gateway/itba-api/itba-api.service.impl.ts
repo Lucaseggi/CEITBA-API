@@ -1,29 +1,11 @@
-import { SubjectPlan } from "../../../domain/entity/subject-plan.model";
-import { Subject } from "../../../domain/entity/subject.model";
-import {
-  Commission,
-  CommissionTime,
-  SubjectType,
-  DayOfWeek,
-} from "../../../domain/entity/commission.model";
-import {
-  ItbaApiServiceInterface,
-  CommissionQueryParams,
-  ITBACareerPlans,
-  ITBASection,
-  ITBASubject,
-  ITBACourseCommissions,
-  ITBACourseCommission,
-  ITBACourseCommissionTime,
-<<<<<<<< HEAD:ddd-src/contexts/career/infrastructure/gateway/itba-api/itba-api.service.impl.ts
-} from "../../../domain/interfaces/infrastructure/repositories/itba-api.service.interface";
-import { ApiClient, ApiFactory } from "./index";
-import { ExternalApiConfig } from "./api-client.interface";
-========
-} from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
-import { ApiClient, ApiFactory } from "@/shared/external-apis";
-import { ExternalApiConfig } from "@/shared/external-apis/api-client.interface";
->>>>>>>> 707df24a99bc8aaf8d99c8df7b5a233b48f946c6:ddd-src/contexts/career/infrastructure/gateway/itba-api.service.impl.ts
+import { DayOfWeek } from "@career/domain/entity/classroom.model";
+import { Commission, CommissionTime, SubjectType } from "@career/domain/entity/commission.model";
+import { SubjectPlan } from "@career/domain/entity/subject-plan.model";
+import { ITBACareerPlans, CommissionQueryParams, ITBACourseCommissions, ITBASection, ITBASubject, ITBACourseCommission } from "../../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
+import { ItbaApiServiceInterface } from "../../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
+import { ApiClient, ExternalApiConfig } from "./api-client.interface";
+import { Subject } from "@career/domain/entity/subject.model";
+
 
 export class ItbaApiServiceImpl implements ItbaApiServiceInterface {
   private readonly apiClient: ApiClient;

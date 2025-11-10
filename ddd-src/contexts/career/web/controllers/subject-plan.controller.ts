@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Query, Param, Body, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Inject,  Controller, Get, Post, Put, Delete, Query, Param, Body, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ResourceNotFoundException, ValidationException } from '../../domain/exceptions/domain.exceptions';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { SubjectPlanQueryDto, CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
+import { SUBJECT_PLAN_SERVICE } from '@boot/di/injection-tokens';
 import { ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 
 @ApiTags('Subject by plan')
 @Controller('v1/plans')
 export class SubjectPlanController {
-    constructor(private readonly subjectPlanService: SubjectPlanServiceInterface) { }
+    constructor(@Inject(SUBJECT_PLAN_SERVICE) private readonly subjectPlanService: SubjectPlanServiceInterface) { }
 
     @Get(':planId/subjects')
     @ApiOperation({ summary: 'Get subjects by plan with filters' })
