@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { CareerService } from '@/domain/itba/services/career.service';
 import { CreateCareerDto, UpdateCareerDto } from '../dto/career.dto';
@@ -12,7 +12,8 @@ export class CareerController {
     @ApiOperation({ summary: 'Get careers with their plans' })
     @ApiResponse({ status: 200, description: 'List of careers with plans' })
     async getCareerPlans() {
-        return await this.careerService.getCareersWithPlans();
+        const careerPlans = await this.careerService.getCareersWithPlans();
+        return Object.values(careerPlans);
     }
 
     @Get()
@@ -44,14 +45,22 @@ export class CareerController {
     @ApiResponse({ status: 201, description: 'Career created successfully' })
     @ApiResponse({ status: 400, description: 'Invalid request data' })
     async createCareer(@Body() createCareerDto: CreateCareerDto) {
-        return await this.careerService.createCareer(createCareerDto);
+        try {
+            return await this.careerService.createCareer(createCareerDto);
+        } catch (error: any) {
+            if (error.message && error.message.includes('already exists')) {
+                throw new BadRequestException(error.message);
+            }
+            throw error;
+        }
     }
 
     @Put(':id')
+    @HttpCode(HttpStatus.CREATED)
     @ApiOperation({ summary: 'Update career by ID' })
     @ApiParam({ name: 'id', description: 'Career ID' })
     @ApiBody({ type: UpdateCareerDto })
-    @ApiResponse({ status: 200, description: 'Career updated successfully' })
+    @ApiResponse({ status: 201, description: 'Career updated successfully' })
     @ApiResponse({ status: 404, description: 'Career not found' })
     async updateCareer(@Param('id') id: string, @Body() updateCareerDto: UpdateCareerDto) {
         const career = await this.careerService.updateCareer(id, updateCareerDto);
@@ -64,10 +73,10 @@ export class CareerController {
     }
 
     @Delete(':id')
-    @HttpCode(HttpStatus.NO_CONTENT)
+    @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Delete career by ID' })
     @ApiParam({ name: 'id', description: 'Career ID' })
-    @ApiResponse({ status: 204, description: 'Career deleted successfully' })
+    @ApiResponse({ status: 200, description: 'Career deleted successfully' })
     @ApiResponse({ status: 404, description: 'Career not found' })
     async deleteCareer(@Param('id') id: string) {
         const deleted = await this.careerService.deleteCareer(id);
@@ -75,5 +84,7 @@ export class CareerController {
         if (!deleted) {
             throw new NotFoundException('Career not found');
         }
+        
+        return { message: 'Career deleted successfully' };
     }
 }

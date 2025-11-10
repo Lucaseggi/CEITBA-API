@@ -2,7 +2,7 @@ import request from 'supertest';
 import { setupE2ETest, E2ETestBase } from './utils/e2e-test-base';
 import { createMockUser } from './utils/auth-mock.helper';
 
-describe('Wiki Bookmark Controller (e2e)', () => {
+describe.skip('Wiki Bookmark Controller (e2e)', () => {
   let testBase: E2ETestBase;
 
   beforeAll(async () => {

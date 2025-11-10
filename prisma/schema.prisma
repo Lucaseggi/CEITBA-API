@@ -63,7 +63,7 @@ model Plan {
   name      String?  @db.VarChar(255)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  career Career @relation(fields: [careerId], references: [id])
+  career Career @relation(fields: [careerId], references: [id], onDelete: Cascade)
 
   @@index([careerId])
   @@map("plan")

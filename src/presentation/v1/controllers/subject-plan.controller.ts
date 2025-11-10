@@ -1,4 +1,6 @@
-import { Controller, Get, Post, Put, Delete, Query, Param, Body, HttpCode, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Query, Param, Body, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ResourceNotFoundException, ValidationException } from '@/shared/exceptions/domain.exceptions';
+import { ForeignKeyConstraintViolationException } from '@/domain/itba/exceptions/itba.exceptions';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { SubjectPlanService } from '@/domain/itba/services/subject-plan.service';
 import { SubjectPlanQueryDto, CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dto/subject-plan.dto';
@@ -12,16 +14,25 @@ export class SubjectPlanController {
     @ApiOperation({ summary: 'Get subjects by plan with filters' })
     @ApiParam({ name: 'planId', description: 'Plan ID' })
     @ApiResponse({ status: 200, description: 'List of subjects for the plan' })
+    @ApiResponse({ status: 400, description: 'Invalid request data' })
+    @ApiResponse({ status: 404, description: 'Plan not found' })
     async getSubjectsByPlan(
         @Param('planId') planId: string,
         @Query() query: SubjectPlanQueryDto
     ) {
-        return await this.subjectPlanService.getSubjectsByPlanWithFilters(planId, {
-            year: query.year || undefined,
-            semester: query.semester || undefined,
-            section: query.section,
-            type: query.type
-        });
+        try {
+            return await this.subjectPlanService.getSubjectsByPlanWithFilters(planId, {
+                year: query.year || undefined,
+                semester: query.semester || undefined,
+                section: query.section,
+                type: query.type
+            });
+        } catch (error: unknown) {
+            if (error instanceof ResourceNotFoundException) {
+                throw new NotFoundException(error.message);
+            }
+            throw error;
+        }
     }
 
 
@@ -58,20 +69,30 @@ export class SubjectPlanController {
     @ApiParam({ name: 'planId', description: 'Plan ID' })
     @ApiBody({ type: CreateSubjectPlanDto })
     @ApiResponse({ status: 201, description: 'Subject plan created successfully' })
+    @ApiResponse({ status: 400, description: 'Invalid request or subject/plan not found' })
     async createSubjectPlan(
         @Param('planId') planId: string,
         @Body() createData: CreateSubjectPlanDto
     ) {
-        const createSubjectPlanDto = {
-            ...createData,
-            planId,
-            year: createData.year ?? null,
-            semester: createData.semester ?? null,
-            creditsRequired: createData.creditsRequired ?? null,
-            dependencies: createData.dependencies ?? []
-        };
+        try {
+            const createSubjectPlanDto = {
+                ...createData,
+                planId,
+                year: createData.year ?? null,
+                semester: createData.semester ?? null,
+                creditsRequired: createData.creditsRequired ?? null,
+                dependencies: createData.dependencies ?? []
+            };
 
-        return await this.subjectPlanService.createSubjectPlan(createSubjectPlanDto);
+            return await this.subjectPlanService.createSubjectPlan(createSubjectPlanDto);
+        } catch (error: unknown) {
+            if (error instanceof ResourceNotFoundException || 
+                error instanceof ValidationException ||
+                error instanceof ForeignKeyConstraintViolationException) {
+                throw new BadRequestException(error.message);
+            }
+            throw error;
+        }
     }
 
     @Put(':planId/subject/:subjectId')
@@ -81,18 +102,29 @@ export class SubjectPlanController {
     @ApiBody({ type: UpdateSubjectPlanDto })
     @ApiResponse({ status: 200, description: 'Subject plan updated successfully' })
     @ApiResponse({ status: 404, description: 'Subject plan not found' })
+    @ApiResponse({ status: 400, description: 'Invalid request' })
     async updateSubjectPlan(
         @Param('planId') planId: string,
         @Param('subjectId') subjectId: string,
         @Body() updateData: UpdateSubjectPlanDto
     ) {
-        const updatedSubjectPlan = await this.subjectPlanService.updateSubjectPlan(planId, subjectId, updateData);
+        try {
+            const updatedSubjectPlan = await this.subjectPlanService.updateSubjectPlan(planId, subjectId, updateData);
 
-        if (!updatedSubjectPlan) {
-            throw new NotFoundException('Subject plan not found');
+            if (!updatedSubjectPlan) {
+                throw new NotFoundException('Subject plan not found');
+            }
+
+            return updatedSubjectPlan;
+        } catch (error: unknown) {
+            if (error instanceof ResourceNotFoundException) {
+                throw new NotFoundException(error.message);
+            }
+            if (error instanceof ValidationException) {
+                throw new BadRequestException(error.message);
+            }
+            throw error;
         }
-
-        return updatedSubjectPlan;
     }
 
     @Delete(':planId/subject/:subjectId')
@@ -106,10 +138,17 @@ export class SubjectPlanController {
         @Param('planId') planId: string,
         @Param('subjectId') subjectId: string
     ) {
-        const deleted = await this.subjectPlanService.deleteSubjectPlan(planId, subjectId);
+        try {
+            const deleted = await this.subjectPlanService.deleteSubjectPlan(planId, subjectId);
 
-        if (!deleted) {
-            throw new NotFoundException('Subject plan not found');
+            if (!deleted) {
+                throw new NotFoundException('Subject plan not found');
+            }
+        } catch (error: unknown) {
+            if (error instanceof ResourceNotFoundException) {
+                throw new NotFoundException(error.message);
+            }
+            throw error;
         }
     }
 }

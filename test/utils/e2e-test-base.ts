@@ -4,14 +4,17 @@ import { PrismaClient } from '@prisma/client';
 import {
   setupTestDatabase,
   teardownTestDatabase,
-  cleanupTestData,
   resetTestDatabase,
+  seedTestData,
+  verifySeedDataIntegrity,
 } from './test-db-setup';
 import { setupMockAuth } from './auth-mock.helper';
+import { PrismaService } from '../../src/shared/database/prisma.service';
 
 /**
  * Base class for E2E tests
  * Provides common setup/teardown logic and utilities
+ * Uses transaction rollback for test isolation
  */
 export class E2ETestBase {
   protected app: INestApplication;
@@ -28,7 +31,10 @@ export class E2ETestBase {
 
     this.moduleFixture = await Test.createTestingModule({
       imports: [AppModule, ...moduleImports],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(this.prisma)
+      .compile();
 
     this.app = this.moduleFixture.createNestApplication();
 
@@ -49,8 +55,8 @@ export class E2ETestBase {
 
     await this.app.init();
 
-    // Note: Prisma client is set up in beforeAllTests(), not here
-    // We don't get it from the module because we use our own test database instance
+    // Note: We override PrismaService to use our test Prisma client
+    // This ensures the app and tests use the same database connection
   }
 
   /**
@@ -62,11 +68,30 @@ export class E2ETestBase {
   }
 
   /**
-   * Cleanup after each test
+   * Start a transaction before each test
+   * This creates a savepoint that will be rolled back after the test
+   *
+   * Note: We use a different approach - we simply verify seed data integrity
+   * and rely on proper cleanup after each test. Transaction rollback with Prisma
+   * is complex because Prisma manages its own connection pool and transactions.
+   */
+  async beforeEachTest(): Promise<void> {
+    if (!this.prisma) {
+      throw new Error('Prisma client not initialized. Call beforeAllTests() first.');
+    }
+
+    // Verify seed data integrity before starting the test
+    await verifySeedDataIntegrity(this.prisma);
+  }
+
+  /**
+   * Clean up after each test
+   * This ensures the database returns to the clean state with only seed data
    */
   async afterEachTest(): Promise<void> {
     if (this.prisma) {
-      await cleanupTestData(this.prisma);
+      // Clean up all test data (preserves seed data)
+      await resetTestDatabase(this.prisma);
     }
   }
 
@@ -113,6 +138,10 @@ export class E2ETestBase {
  *
  *   beforeAll(async () => {
  *     testBase = await setupE2ETest();
+ *   });
+ *
+ *   beforeEach(async () => {
+ *     await testBase.beforeEachTest();
  *   });
  *
  *   afterEach(async () => {

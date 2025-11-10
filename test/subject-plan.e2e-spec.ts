@@ -13,6 +13,12 @@ describe('Subject Plan Controller (e2e)', () => {
     }
   });
 
+  beforeEach(async () => {
+    if (testBase) {
+      await testBase.beforeEachTest();
+    }
+  });
+
   afterEach(async () => {
     if (testBase) {
       await testBase.afterEachTest();
@@ -25,8 +31,9 @@ describe('Subject Plan Controller (e2e)', () => {
     }
   });
 
-  // Helper to create test subjects
-  async function createTestSubjects() {
+  // Helper to create test subjects and plans
+  async function createTestData() {
+    // Create test subjects
     await testBase.getPrisma().subject.createMany({
       data: [
         { id: '93.40', name: 'Matemática Discreta', credits: 6 },
@@ -36,11 +43,20 @@ describe('Subject Plan Controller (e2e)', () => {
       ],
       skipDuplicates: true,
     });
+
+    // Create test plans using existing career
+    await testBase.getPrisma().plan.createMany({
+      data: [
+        { id: 'TEST-2023', name: 'Test Plan 2023', careerId: 'I' },
+        { id: 'TEST-2015', name: 'Test Plan 2015', careerId: 'I' }
+      ],
+      skipDuplicates: true
+    });
   }
 
   describe('POST /api/v1/plans/:planId/subject', () => {
     beforeEach(async () => {
-      await createTestSubjects();
+      await createTestData();
     });
 
     it('should create a new subject plan', async () => {
@@ -54,12 +70,12 @@ describe('Subject Plan Controller (e2e)', () => {
       };
 
       const response = await request(testBase.getApp().getHttpServer())
-        .post('/api/v1/plans/2023/subject')
+        .post('/api/v1/plans/TEST-2023/subject')
         .send(subjectPlan)
         .expect(201);
 
       expect(response.body).toHaveProperty('subjectId', '93.42');
-      expect(response.body).toHaveProperty('planId', '2023');
+      expect(response.body).toHaveProperty('planId', 'TEST-2023');
       expect(response.body).toHaveProperty('section', 'CIENCIAS_BASICAS');
       expect(response.body).toHaveProperty('year', 1);
       expect(response.body).toHaveProperty('semester', 2);
@@ -162,7 +178,7 @@ describe('Subject Plan Controller (e2e)', () => {
 
   describe('GET /api/v1/plans/:planId/subjects', () => {
     beforeEach(async () => {
-      await createTestSubjects();
+      await createTestData();
 
       // Create some subject plans
       await testBase.getPrisma().planSubject.createMany({
@@ -273,7 +289,7 @@ describe('Subject Plan Controller (e2e)', () => {
 
   describe('GET /api/v1/plans/:planId/subject/:subjectId', () => {
     beforeEach(async () => {
-      await createTestSubjects();
+      await createTestData();
 
       await testBase.getPrisma().planSubject.create({
         data: {
@@ -315,7 +331,7 @@ describe('Subject Plan Controller (e2e)', () => {
 
   describe('PUT /api/v1/plans/:planId/subject/:subjectId', () => {
     beforeEach(async () => {
-      await createTestSubjects();
+      await createTestData();
 
       await testBase.getPrisma().planSubject.create({
         data: {
@@ -389,7 +405,7 @@ describe('Subject Plan Controller (e2e)', () => {
 
   describe('DELETE /api/v1/plans/:planId/subject/:subjectId', () => {
     beforeEach(async () => {
-      await createTestSubjects();
+      await createTestData();
 
       await testBase.getPrisma().planSubject.create({
         data: {
@@ -424,7 +440,7 @@ describe('Subject Plan Controller (e2e)', () => {
 
   describe('GET /api/v1/plans/subjects/:subjectId/plans', () => {
     beforeEach(async () => {
-      await createTestSubjects();
+      await createTestData();
 
       // Add subject to multiple plans
       await testBase.getPrisma().planSubject.createMany({
@@ -476,7 +492,7 @@ describe('Subject Plan Controller (e2e)', () => {
 
   describe('Complete Subject Plan Lifecycle', () => {
     beforeEach(async () => {
-      await createTestSubjects();
+      await createTestData();
     });
 
     it('should create, read, update, and delete subject plan', async () => {

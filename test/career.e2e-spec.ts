@@ -13,6 +13,12 @@ describe('Career Controller (e2e)', () => {
     }
   });
 
+  beforeEach(async () => {
+    if (testBase) {
+      await testBase.beforeEachTest();
+    }
+  });
+
   afterEach(async () => {
     if (testBase) {
       await testBase.afterEachTest();

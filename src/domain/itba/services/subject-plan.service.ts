@@ -21,6 +21,7 @@ import {
 } from "@/shared/constants/injection-tokens";
 import { SectionSubjectsDto, SubjectDetailDto, CommissionDto, ScheduleDto } from "@/presentation/v1/dto/subject-plan-response.dto";
 import { CommissionRepository } from "@/domain/itba/interfaces/repositories/commission.repository.interface";
+import { PrismaService } from "@/shared/database/prisma.service";
 
 @Injectable()
 export class SubjectPlanService implements SubjectPlanServiceInterface {
@@ -47,6 +48,7 @@ export class SubjectPlanService implements SubjectPlanServiceInterface {
       type?: "elective";
     },
   ): Promise<SubjectPlan[]> {
+    // Handle filtering by both year and semester if both are provided
     if (filters.year !== undefined && filters.semester !== undefined) {
       return await this.getSubjectsBySemester(
         planId,
@@ -55,6 +57,15 @@ export class SubjectPlanService implements SubjectPlanServiceInterface {
       );
     }
 
+    // Handle filtering just by semester
+    if (filters.semester !== undefined) {
+      // Get all subjects for the plan
+      const subjects = await this.getSubjectsByPlan(planId);
+      // Filter them by semester
+      return subjects.filter(subject => subject.semester === filters.semester);
+    }
+
+    // Handle filtering just by year
     if (filters.year !== undefined) {
       return await this.getSubjectsByYear(planId, filters.year);
     }

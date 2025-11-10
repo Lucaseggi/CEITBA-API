@@ -2,7 +2,7 @@ import { SubjectPlan } from '@/domain/itba/models/subject-plan.model';
 import { Subject } from '@/domain/itba/models/subject.model';
 import { SubjectPlanRepository } from '@/domain/itba/interfaces/repositories/subject-plan.repository.interface';
 import { SubjectPlanNotFoundException, SubjectPlanAlreadyExistsException, ForeignKeyConstraintViolationException } from '@/domain/itba/exceptions/itba.exceptions';
-import { GenericDomainException } from '@/shared/exceptions';
+import { GenericDomainException, ResourceNotFoundException } from '@/shared/exceptions/domain.exceptions';
 import { PrismaService } from '@/shared/database/prisma.service';
 
 export class SubjectPlanRepositoryImpl implements SubjectPlanRepository {
@@ -103,6 +103,18 @@ export class SubjectPlanRepositoryImpl implements SubjectPlanRepository {
     }
 
     async create(subjectPlan: SubjectPlan): Promise<SubjectPlan> {
+        // First check if plan exists
+        const planExists = await this.prisma.plan.findUnique({
+            where: { id: subjectPlan.planId }
+        });
+        
+        if (!planExists) {
+            throw new ResourceNotFoundException(
+                "Plan",
+                subjectPlan.planId
+            );
+        }
+
         const planSubjectResult = await this.prisma.planSubject.create({
             data: {
                 subjectId: subjectPlan.subjectId,
@@ -322,7 +334,11 @@ export class SubjectPlanRepositoryImpl implements SubjectPlanRepository {
         return planSubjects.map(ps => this.mapToSubjectPlan(ps, subjectMap.get(ps.subjectId)!));
     }
 
-    private mapToSubjectPlan(planSubjectData: any, subjectData: any): SubjectPlan {
+    private mapToSubjectPlan(planSubjectData: any, subjectData: any | null): SubjectPlan {
+        if (!subjectData) {
+            throw new Error(`Subject not found for plan-subject mapping: ${planSubjectData.subjectId}`);
+        }
+
         const subject = new Subject(
             subjectData.id,
             subjectData.name,

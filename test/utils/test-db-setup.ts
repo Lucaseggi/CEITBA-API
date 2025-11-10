@@ -7,13 +7,15 @@ import { execSync } from 'child_process';
  * Note: While the plan mentioned SQLite, we're using PostgreSQL test database
  * to maintain compatibility with the Prisma schema and avoid migration issues.
  * The database is cleaned between tests for isolation.
+ *
+ * Each test suite gets its own PrismaClient instance to avoid connection conflicts
+ * when tests run in parallel or sequentially.
  */
-
-let prisma: PrismaClient;
 
 /**
  * Initialize test database connection
  * Sets up a Prisma client connected to the test database
+ * Returns a new instance per call to ensure isolation between test suites
  */
 export async function setupTestDatabase(): Promise<PrismaClient> {
   // Use TEST_DATABASE_URL if available, otherwise use regular DATABASE_URL
@@ -23,7 +25,7 @@ export async function setupTestDatabase(): Promise<PrismaClient> {
     throw new Error('DATABASE_URL or TEST_DATABASE_URL must be set for E2E tests');
   }
 
-  prisma = new PrismaClient({
+  const prisma = new PrismaClient({
     datasources: {
       db: {
         url: databaseUrl,
@@ -165,11 +167,57 @@ export async function teardownTestDatabase(prismaClient: PrismaClient): Promise<
 }
 
 /**
- * Get the Prisma client instance for tests
+ * Verify seed data integrity
+ * Ensures that the foundation data (careers I/E, plans 2023/2015) hasn't been modified
+ * Throws an error if seed data is missing or corrupted
  */
-export function getTestPrismaClient(): PrismaClient {
-  if (!prisma) {
-    throw new Error('Test database not initialized. Call setupTestDatabase() first.');
+export async function verifySeedDataIntegrity(prismaClient: PrismaClient): Promise<void> {
+  // Check careers exist
+  const careerI = await prismaClient.career.findUnique({ where: { id: 'I' } });
+  const careerE = await prismaClient.career.findUnique({ where: { id: 'E' } });
+
+  if (!careerI) {
+    throw new Error('Seed data integrity check failed: Career "I" (Ingeniería Informática) is missing');
   }
-  return prisma;
+  if (!careerE) {
+    throw new Error('Seed data integrity check failed: Career "E" (Ingeniería Electrónica) is missing');
+  }
+
+  // Check career names haven't been modified
+  if (careerI.name !== 'Ingeniería Informática') {
+    throw new Error(`Seed data integrity check failed: Career "I" name was modified to "${careerI.name}"`);
+  }
+  if (careerE.name !== 'Ingeniería Electrónica') {
+    throw new Error(`Seed data integrity check failed: Career "E" name was modified to "${careerE.name}"`);
+  }
+
+  // Check plans exist
+  const plan2023 = await prismaClient.plan.findUnique({ where: { id: '2023' } });
+  const plan2015 = await prismaClient.plan.findUnique({ where: { id: '2015' } });
+
+  if (!plan2023) {
+    throw new Error('Seed data integrity check failed: Plan "2023" is missing');
+  }
+  if (!plan2015) {
+    throw new Error('Seed data integrity check failed: Plan "2015" is missing');
+  }
+
+  // Check plan properties
+  if (plan2023.careerId !== 'I') {
+    throw new Error(`Seed data integrity check failed: Plan "2023" careerId was modified to "${plan2023.careerId}"`);
+  }
+  if (plan2015.careerId !== 'I') {
+    throw new Error(`Seed data integrity check failed: Plan "2015" careerId was modified to "${plan2015.careerId}"`);
+  }
+}
+
+/**
+ * Get immutable seed data IDs
+ * Returns the IDs of seed data that should never be modified by tests
+ */
+export function getImmutableSeedDataIds() {
+  return {
+    careers: ['I', 'E'],
+    plans: ['2023', '2015'],
+  };
 }
