@@ -1,34 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { SubjectPlanController } from './subject-plan.controller';
 import { createTestSubjectPlan } from 'test/utils/test-factories';
 import { SubjectPlanQueryDto, CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
-import { SubjectPlanService } from '../../application/services/subject-plan.service';
+import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
 
 describe('SubjectPlanController', () => {
   let controller: SubjectPlanController;
-  let service: jest.Mocked<SubjectPlanService>;
+  let service: jest.Mocked<SubjectPlanServiceInterface>;
+  beforeEach(() => {
+    service = {
+      getSubjectsByPlanWithFilters: jest.fn(),
+      getSubjectPlansBySubject: jest.fn(),
+      getSubjectPlan: jest.fn(),
+      createSubjectPlan: jest.fn(),
+      updateSubjectPlan: jest.fn(),
+      deleteSubjectPlan: jest.fn(),
+    } as unknown as jest.Mocked<SubjectPlanServiceInterface>;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [SubjectPlanController],
-      providers: [
-        {
-          provide: SubjectPlanService,
-          useValue: {
-            getSubjectsByPlanWithFilters: jest.fn(),
-            getSubjectPlansBySubject: jest.fn(),
-            getSubjectPlan: jest.fn(),
-            createSubjectPlan: jest.fn(),
-            updateSubjectPlan: jest.fn(),
-            deleteSubjectPlan: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
-
-    controller = module.get<SubjectPlanController>(SubjectPlanController);
-    service = module.get<SubjectPlanService>(SubjectPlanService) as jest.Mocked<SubjectPlanService>;
+    controller = new SubjectPlanController(service);
   });
 
   afterEach(() => {

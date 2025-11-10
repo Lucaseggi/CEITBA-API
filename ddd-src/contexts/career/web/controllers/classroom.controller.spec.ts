@@ -1,33 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ClassroomController } from './classroom.controller';
 import { ItbaMappers } from '@/shared/mappers/itba.mappers';
 import { createTestClassroom, createTestClassroomSchedule, createTestTimeSlot } from 'test/utils/test-factories';
 import { DayOfWeek } from '../../domain/entity/classroom.model';
-import { ClassroomService } from '../../application/services/classroom.service';
+import { ClassroomServiceInterface } from '../../domain/interfaces/application/classroom.service.interface';
 import { ClassroomConflictDto, ClassroomQueryDto } from '../dtos/classroom.dto';
 
 describe('ClassroomController', () => {
   let controller: ClassroomController;
-  let service: jest.Mocked<ClassroomService>;
+  let service: jest.Mocked<ClassroomServiceInterface>;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [ClassroomController],
-      providers: [
-        {
-          provide: ClassroomService,
-          useValue: {
-            getClassroomsWithFilters: jest.fn(),
-            getClassroomsByBuilding: jest.fn(),
-            getClassroomsByDay: jest.fn(),
-            checkForConflicts: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+  beforeEach(() => {
+    service = {
+      getClassroomsWithFilters: jest.fn(),
+      getClassroomsByBuilding: jest.fn(),
+      getClassroomsByDay: jest.fn(),
+      checkForConflicts: jest.fn(),
+    } as unknown as jest.Mocked<ClassroomServiceInterface>;
 
-    controller = module.get<ClassroomController>(ClassroomController);
-    service = module.get<ClassroomService>(ClassroomService) as jest.Mocked<ClassroomService>;
+    controller = new ClassroomController(service);
   });
 
   afterEach(() => {

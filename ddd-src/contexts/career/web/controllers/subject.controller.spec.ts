@@ -1,8 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { SubjectController } from './subject.controller';
-import { SubjectService } from '../../application/services/subject.service';
-import { SubjectPlanService } from '../../application/services/subject-plan.service';
+import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';
+import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
 import { Subject } from '../../domain/entity/subject.model';
 
 const buildSubject = (id = '93.42', name = 'Cálculo I', credits = 6) =>
@@ -10,33 +9,21 @@ const buildSubject = (id = '93.42', name = 'Cálculo I', credits = 6) =>
 
 describe('SubjectController', () => {
     let controller: SubjectController;
-    let subjectService: jest.Mocked<SubjectService>;
-    let subjectPlanService: jest.Mocked<SubjectPlanService>;
+    let subjectService: jest.Mocked<SubjectServiceInterface>;
+    let subjectPlanService: jest.Mocked<SubjectPlanServiceInterface>;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            controllers: [SubjectController],
-            providers: [
-                {
-                    provide: SubjectService,
-                    useValue: {
-                        getAllSubjects: jest.fn(),
-                        getSubjectsByName: jest.fn(),
-                        getSubjectById: jest.fn(),
-                    },
-                },
-                {
-                    provide: SubjectPlanService,
-                    useValue: {
-                        getSubjectsByPlanOrganized: jest.fn(),
-                    },
-                },
-            ],
-        }).compile();
+    beforeEach(() => {
+        subjectService = {
+            getAllSubjects: jest.fn(),
+            getSubjectsByName: jest.fn(),
+            getSubjectById: jest.fn(),
+        } as unknown as jest.Mocked<SubjectServiceInterface>;
 
-        controller = module.get<SubjectController>(SubjectController);
-        subjectService = module.get<SubjectService>(SubjectService) as jest.Mocked<SubjectService>;
-        subjectPlanService = module.get<SubjectPlanService>(SubjectPlanService) as jest.Mocked<SubjectPlanService>;
+        subjectPlanService = {
+            getSubjectsByPlanOrganized: jest.fn(),
+        } as unknown as jest.Mocked<SubjectPlanServiceInterface>;
+
+        controller = new SubjectController(subjectService, subjectPlanService);
     });
 
     describe('getSubjectById', () => {

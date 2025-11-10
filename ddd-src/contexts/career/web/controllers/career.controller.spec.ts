@@ -1,39 +1,25 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { CareerController } from './career.controller';
-import { CareerService } from '../../application/services/career.service';
+import { CareerServiceInterface } from '../../domain/interfaces/application/career.service.interface';
 import { createTestCareer } from 'test/utils/test-factories';
 
 describe('CareerController', () => {
   let controller: CareerController;
-  let service: jest.Mocked<CareerService>;
+  let service: jest.Mocked<CareerServiceInterface>;
+  beforeEach(() => {
+    service = {
+      getAllCareers: jest.fn(),
+      getCareerById: jest.fn(),
+      createCareer: jest.fn(),
+      updateCareer: jest.fn(),
+      deleteCareer: jest.fn(),
+      getCareersWithPlans: jest.fn(),
+      addPlanToCareer: jest.fn(),
+      removePlanFromCareer: jest.fn(),
+    } as unknown as jest.Mocked<CareerServiceInterface>;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [CareerController],
-      providers: [
-        {
-          provide: CareerService,
-          useValue: {
-            getAllCareers: jest.fn(),
-            getCareerById: jest.fn(),
-            createCareer: jest.fn(),
-            updateCareer: jest.fn(),
-            deleteCareer: jest.fn(),
-            getCareersWithPlans: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
-
-    controller = module.get<CareerController>(CareerController);
-    service = module.get<CareerService>(CareerService) as jest.Mocked<CareerService>;
+    controller = new CareerController(service); 
   });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('getCareerPlans', () => {
     it('should return careers with their plans', async () => {
       const mockCareersWithPlans = {
@@ -46,7 +32,6 @@ describe('CareerController', () => {
       const result = await controller.getCareerPlans();
 
       expect(service.getCareersWithPlans).toHaveBeenCalledTimes(1);
-      // Controller returns Object.values(), so result is an array
       expect(result).toEqual(Object.values(mockCareersWithPlans));
     });
 
@@ -55,7 +40,6 @@ describe('CareerController', () => {
 
       const result = await controller.getCareerPlans();
 
-      // Controller returns Object.values(), so result is an array
       expect(result).toEqual([]);
     });
   });
@@ -154,7 +138,6 @@ describe('CareerController', () => {
       const result = await controller.deleteCareer('I');
 
       expect(service.deleteCareer).toHaveBeenCalledWith('I');
-      // Controller returns a success message object
       expect(result).toEqual({ message: 'Career deleted successfully' });
     });
 
