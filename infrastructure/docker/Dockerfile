@@ -72,3 +72,29 @@ USER ceitba
 EXPOSE 3000
 
 CMD ["npm", "run", "start:dev"]
+
+# Stage 4: Test environment
+FROM node:20-alpine AS test
+
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+COPY package*.json ./
+
+# Install all dependencies including devDependencies for testing
+RUN npm ci
+
+# Copy source code and test files
+COPY . .
+COPY prisma ./prisma
+COPY test ./test
+
+# Generate Prisma client
+RUN npx prisma generate
+
+EXPOSE 3000
+
+# Default command can be overridden in docker-compose
+# Supports: npm test (unit), npm run test:e2e (e2e), npm run test:cov (coverage)
+CMD ["npm", "test"]

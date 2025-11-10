@@ -15,12 +15,12 @@ describe('ClassroomRepositoryImpl', () => {
   describe('findAllClassrooms', () => {
     it('should return all distinct classrooms ordered by building and classroom', async () => {
       const mockResults = [
-        { building: 'Aula', classroom: 'A-101' },
-        { building: 'Aula', classroom: 'A-102' },
-        { building: 'Laboratorio', classroom: 'L-201' },
+        { building: 'Aula', classroom: 'A-101', courseId: '93.40', day: 'Monday' as any, hourFrom: '08:00', hourTo: '10:00' },
+        { building: 'Aula', classroom: 'A-102', courseId: '93.41', day: 'Monday' as any, hourFrom: '08:00', hourTo: '10:00' },
+        { building: 'Laboratorio', classroom: 'L-201', courseId: '93.42', day: 'Monday' as any, hourFrom: '08:00', hourTo: '10:00' },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockResults);
+      prisma.commissionTime.findMany.mockResolvedValue(mockResults as any);
 
       const result = await repository.findAllClassrooms();
 
@@ -51,13 +51,14 @@ describe('ClassroomRepositoryImpl', () => {
         {
           building: 'Aula',
           classroom: 'A-101',
-          day: 'Monday',
+          day: 'Monday' as any,
           hourFrom: '08:00',
           hourTo: '10:00',
+          courseId: '93.40',
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockResults);
+      prisma.commissionTime.findMany.mockResolvedValue(mockResults as any);
 
       const result = await repository.findOccupiedClassrooms(true);
 
@@ -93,13 +94,14 @@ describe('ClassroomRepositoryImpl', () => {
         {
           building: 'Aula',
           classroom: 'A-101',
-          day: 'Tuesday',
+          day: 'Tuesday' as any,
           hourFrom: '14:00',
           hourTo: '16:00',
+          courseId: '93.40',
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockResults);
+      prisma.commissionTime.findMany.mockResolvedValue(mockResults as any);
 
       const result = await repository.findOccupiedClassrooms(false);
 
@@ -129,13 +131,14 @@ describe('ClassroomRepositoryImpl', () => {
         {
           building: 'Aula',
           classroom: 'A-101',
-          day: 'InvalidDay',
+          day: 'InvalidDay' as any,
           hourFrom: '08:00',
           hourTo: '10:00',
+          courseId: '93.40',
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockResults);
+      prisma.commissionTime.findMany.mockResolvedValue(mockResults as any);
 
       const result = await repository.findOccupiedClassrooms();
 
@@ -153,7 +156,7 @@ describe('ClassroomRepositoryImpl', () => {
         { building: 'Laboratorio', classroom: 'L-201' },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms as any);
 
       const result = await repository.findByBuilding('Aula');
 
@@ -166,7 +169,7 @@ describe('ClassroomRepositoryImpl', () => {
         { building: 'Aula', classroom: 'A-101' },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms as any);
 
       const result = await repository.findByBuilding('AULA');
 
@@ -178,7 +181,7 @@ describe('ClassroomRepositoryImpl', () => {
         { building: 'Aula', classroom: 'A-101' },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms as any);
 
       const result = await repository.findByBuilding('NonExistent');
 
@@ -205,7 +208,7 @@ describe('ClassroomRepositoryImpl', () => {
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms as any);
 
       const result = await repository.findByDay('Monday');
 
@@ -224,7 +227,7 @@ describe('ClassroomRepositoryImpl', () => {
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms as any);
 
       const result = await repository.findByDay('MONDAY');
 
@@ -242,7 +245,7 @@ describe('ClassroomRepositoryImpl', () => {
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms as any);
 
       const result = await repository.findByDay('Sunday');
 
@@ -257,7 +260,7 @@ describe('ClassroomRepositoryImpl', () => {
         { building: 'Aula', classroom: 'A-102' },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockAllClassrooms as any);
 
       const result = await repository.findAvailableClassrooms();
 
@@ -289,7 +292,7 @@ describe('ClassroomRepositoryImpl', () => {
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms as any);
 
       const result = await repository.findConflicts(targetSchedule);
 
@@ -313,7 +316,7 @@ describe('ClassroomRepositoryImpl', () => {
         },
       ];
 
-      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms);
+      prisma.commissionTime.findMany.mockResolvedValue(mockOccupiedClassrooms as any);
 
       const result = await repository.findConflicts(targetSchedule);
 

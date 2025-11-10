@@ -32,7 +32,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       ];
 
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findAll();
 
@@ -63,7 +63,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       ];
 
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findByPlanId('2023');
 
@@ -93,7 +93,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       const mockSubject = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
 
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findUnique.mockResolvedValue(mockSubject);
+      prisma.subject.findUnique.mockResolvedValue(mockSubject as any);
 
       const result = await repository.findBySubjectId('93.42');
 
@@ -124,7 +124,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       const mockSubject = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
 
       prisma.planSubject.findUnique.mockResolvedValue(mockPlanSubject);
-      prisma.subject.findUnique.mockResolvedValue(mockSubject);
+      prisma.subject.findUnique.mockResolvedValue(mockSubject as any);
 
       const result = await repository.findByPlanAndSubject('2023', '93.42');
 
@@ -163,8 +163,9 @@ describe('SubjectPlanRepositoryImpl', () => {
       const mockCreated = createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1);
       const mockSubject = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
 
+      prisma.plan.findUnique.mockResolvedValue({ id: '2023' } as any);
       prisma.planSubject.create.mockResolvedValue(mockCreated);
-      prisma.subject.findUnique.mockResolvedValue(mockSubject);
+      prisma.subject.findUnique.mockResolvedValue(mockSubject as any);
 
       const result = await repository.create(subjectPlan);
 
@@ -186,6 +187,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       const subjectPlan = createTestSubjectPlan();
       const prismaError = { code: 'P2002', meta: {} };
 
+      prisma.plan.findUnique.mockResolvedValue({ id: '2023' } as any);
       prisma.planSubject.create.mockRejectedValue(prismaError);
 
       await expect(repository.create(subjectPlan)).rejects.toThrow(SubjectPlanAlreadyExistsException);
@@ -195,6 +197,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       const subjectPlan = createTestSubjectPlan();
       const prismaError = { code: 'P2003', meta: {} };
 
+      prisma.plan.findUnique.mockResolvedValue({ id: '2023' } as any);
       prisma.planSubject.create.mockRejectedValue(prismaError);
 
       await expect(repository.create(subjectPlan)).rejects.toThrow(ForeignKeyConstraintViolationException);
@@ -204,6 +207,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       const subjectPlan = createTestSubjectPlan();
       const prismaError = { code: 'P9999', message: 'Unknown error' };
 
+      prisma.plan.findUnique.mockResolvedValue({ id: '2023' } as any);
       prisma.planSubject.create.mockRejectedValue(prismaError);
 
       await expect(repository.create(subjectPlan)).rejects.toThrow(GenericDomainException);
@@ -217,7 +221,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       const mockSubject = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
 
       prisma.planSubject.update.mockResolvedValue(mockUpdated);
-      prisma.subject.findUnique.mockResolvedValue(mockSubject);
+      prisma.subject.findUnique.mockResolvedValue(mockSubject as any);
 
       const result = await repository.update(subjectPlan);
 
@@ -296,7 +300,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       ];
 
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findBySection('2023', 'CIENCIAS_BASICAS');
 
@@ -327,7 +331,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       ];
 
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findElectives('2023');
 
@@ -360,7 +364,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       ];
 
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findByYear('2023', 1);
 
@@ -391,7 +395,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       ];
 
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findBySemester('2023', 1, 1);
 

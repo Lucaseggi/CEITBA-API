@@ -20,7 +20,7 @@ describe('CommissionRepositoryImpl', () => {
         createPrismaCommissionResult('COMM-002', '93.50', 'B', new Date('2024-03-01'), new Date('2024-07-31'), 25, 35, 'SEMESTRAL', []),
       ];
 
-      prisma.commission.findMany.mockResolvedValue(mockCommissions);
+      prisma.commission.findMany.mockResolvedValue(mockCommissions as any);
 
       const result = await repository.findAll();
 
@@ -46,7 +46,7 @@ describe('CommissionRepositoryImpl', () => {
     it('should return commission when found', async () => {
       const mockCommission = createPrismaCommissionResult('COMM-001', '93.42', 'A', new Date('2024-03-01'), new Date('2024-07-31'), 30, 40, 'SEMESTRAL', []);
 
-      prisma.commission.findUnique.mockResolvedValue(mockCommission);
+      prisma.commission.findUnique.mockResolvedValue(mockCommission as any);
 
       const result = await repository.findById('COMM-001');
 
@@ -74,7 +74,7 @@ describe('CommissionRepositoryImpl', () => {
         createPrismaCommissionResult('COMM-002', '93.42', 'B', new Date('2024-03-01'), new Date('2024-07-31'), 25, 35, 'SEMESTRAL', []),
       ];
 
-      prisma.commission.findMany.mockResolvedValue(mockCommissions);
+      prisma.commission.findMany.mockResolvedValue(mockCommissions as any);
 
       const result = await repository.findBySubjectCode('93.42');
 
@@ -102,7 +102,7 @@ describe('CommissionRepositoryImpl', () => {
         createPrismaCommissionResult('COMM-001', '93.42', 'A', new Date('2024-03-01'), new Date('2024-12-31'), 30, 40, 'SEMESTRAL', []),
       ];
 
-      prisma.commission.findMany.mockResolvedValue(mockCommissions);
+      prisma.commission.findMany.mockResolvedValue(mockCommissions as any);
 
       const result = await repository.findActiveCommissions();
 
@@ -124,7 +124,7 @@ describe('CommissionRepositoryImpl', () => {
         createPrismaCommissionResult('COMM-001', '93.42', 'A', new Date('2024-03-01'), new Date('2024-07-31'), 30, 40, 'SEMESTRAL', []),
       ];
 
-      prisma.commission.findMany.mockResolvedValue(mockCommissions);
+      prisma.commission.findMany.mockResolvedValue(mockCommissions as any);
 
       const result = await repository.findByCommissionName('A');
 
@@ -151,7 +151,7 @@ describe('CommissionRepositoryImpl', () => {
         hourTo: time.hourTo,
       }]);
 
-      prisma.commission.create.mockResolvedValue(mockCreated);
+      prisma.commission.create.mockResolvedValue(mockCreated as any);
 
       const result = await repository.create(commission);
 
@@ -205,7 +205,7 @@ describe('CommissionRepositoryImpl', () => {
         hourTo: time.hourTo,
       }]);
 
-      prisma.commission.update.mockResolvedValue(mockUpdated);
+      prisma.commission.update.mockResolvedValue(mockUpdated as any);
 
       const result = await repository.update(commission);
 
@@ -270,7 +270,7 @@ describe('CommissionRepositoryImpl', () => {
       const commission = createTestCommission('COMM-001', '93.42', 'A');
       const mockUpserted = createPrismaCommissionResult('COMM-001', '93.42', 'A', new Date('2024-03-01'), new Date('2024-07-31'), 30, 40, 'SEMESTRAL', []);
 
-      prisma.commission.upsert.mockResolvedValue(mockUpserted);
+      prisma.commission.upsert.mockResolvedValue(mockUpserted as any);
 
       const result = await repository.upsert(commission);
 
@@ -313,8 +313,8 @@ describe('CommissionRepositoryImpl', () => {
       ];
 
       prisma.commission.upsert
-        .mockResolvedValueOnce(mockResults[0])
-        .mockResolvedValueOnce(mockResults[1]);
+        .mockResolvedValueOnce(mockResults[0] as any)
+        .mockResolvedValueOnce(mockResults[1] as any);
 
       const result = await repository.upsertMany(commissions);
 

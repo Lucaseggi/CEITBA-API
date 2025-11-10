@@ -25,7 +25,7 @@ describe('CareerRepositoryImpl', () => {
         { id: 'E', name: 'Ingeniería Electrónica' },
       ];
 
-      prisma.career.findMany.mockResolvedValue(mockCareers);
+      prisma.career.findMany.mockResolvedValue(mockCareers as any);
 
       const result = await repository.findAll();
 
@@ -51,7 +51,7 @@ describe('CareerRepositoryImpl', () => {
   describe('findById', () => {
     it('should return career when found', async () => {
       const mockCareer = { id: 'I', name: 'Ingeniería Informática' };
-      prisma.career.findUnique.mockResolvedValue(mockCareer);
+      prisma.career.findUnique.mockResolvedValue(mockCareer as any);
 
       const result = await repository.findById('I');
 
@@ -77,7 +77,7 @@ describe('CareerRepositoryImpl', () => {
   describe('findByName', () => {
     it('should return career when found by name', async () => {
       const mockCareer = { id: 'I', name: 'Ingeniería Informática' };
-      prisma.career.findFirst.mockResolvedValue(mockCareer);
+      prisma.career.findFirst.mockResolvedValue(mockCareer as any);
 
       const result = await repository.findByName('Ingeniería Informática');
 
@@ -103,7 +103,7 @@ describe('CareerRepositoryImpl', () => {
       const career = createTestCareer('I', 'Ingeniería Informática', ['2023']);
       const mockResult = { id: 'I', name: 'Ingeniería Informática' };
 
-      prisma.career.create.mockResolvedValue(mockResult);
+      prisma.career.create.mockResolvedValue(mockResult as any);
 
       const result = await repository.create(career);
 
@@ -147,7 +147,7 @@ describe('CareerRepositoryImpl', () => {
       const career = createTestCareer('I', 'Ingeniería Informática Updated', ['2023']);
       const mockResult = { id: 'I', name: 'Ingeniería Informática Updated' };
 
-      prisma.career.update.mockResolvedValue(mockResult);
+      prisma.career.update.mockResolvedValue(mockResult as any);
 
       const result = await repository.update(career);
 
@@ -254,7 +254,7 @@ describe('CareerRepositoryImpl', () => {
         },
       ];
 
-      prisma.career.findMany.mockResolvedValue(mockCareers);
+      prisma.career.findMany.mockResolvedValue(mockCareers as any);
 
       const result = await repository.findCareersWithPlans();
 
@@ -286,7 +286,7 @@ describe('CareerRepositoryImpl', () => {
         },
       ];
 
-      prisma.career.findMany.mockResolvedValue(mockCareers);
+      prisma.career.findMany.mockResolvedValue(mockCareers as any);
 
       const result = await repository.findCareersWithPlans();
 

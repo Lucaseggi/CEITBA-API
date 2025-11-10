@@ -46,15 +46,17 @@ describe('CareerController', () => {
       const result = await controller.getCareerPlans();
 
       expect(service.getCareersWithPlans).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(mockCareersWithPlans);
+      // Controller returns Object.values(), so result is an array
+      expect(result).toEqual(Object.values(mockCareersWithPlans));
     });
 
-    it('should return empty object when no careers with plans exist', async () => {
+    it('should return empty array when no careers with plans exist', async () => {
       service.getCareersWithPlans.mockResolvedValue({});
 
       const result = await controller.getCareerPlans();
 
-      expect(result).toEqual({});
+      // Controller returns Object.values(), so result is an array
+      expect(result).toEqual([]);
     });
   });
 
@@ -152,7 +154,8 @@ describe('CareerController', () => {
       const result = await controller.deleteCareer('I');
 
       expect(service.deleteCareer).toHaveBeenCalledWith('I');
-      expect(result).toBeUndefined();
+      // Controller returns a success message object
+      expect(result).toEqual({ message: 'Career deleted successfully' });
     });
 
     it('should throw NotFoundException when career not found', async () => {

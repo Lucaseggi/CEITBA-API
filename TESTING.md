@@ -1,71 +1,80 @@
-# Testing Guidelines
+# Testing Guide
 
-## Overview
+This guide covers unit and E2E testing for the CEITBA API project.
 
-This project uses Jest as the testing framework with comprehensive unit, integration, and E2E tests.
+## Quick Start
+
+### Run Tests Locally
+```bash
+npm test              # Unit tests
+npm run test:e2e      # E2E tests
+npm run test:cov      # Unit tests with coverage
+```
+
+### Run Tests in Docker (Recommended)
+```bash
+npm run test:docker        # Unit tests in Docker
+npm run test:e2e:docker    # E2E tests in Docker
+```
+
+Docker provides consistent results across all machines and matches CI/CD environments.
+
+---
 
 ## Test Structure
-
-### Directory Organization
 
 ```
 src/
 ├── domain/
 │   └── itba/
 │       ├── repositories/
-│       │   ├── subject.repository.impl.ts
-│       │   └── subject.repository.impl.spec.ts  ← Unit tests
+│       │   └── *.repository.impl.spec.ts    ← Unit tests
 │       └── services/
-│           ├── subject.service.ts
-│           └── subject.service.spec.ts          ← Unit tests
+│           └── *.service.spec.ts            ← Unit tests
 ├── presentation/
 │   └── v1/
 │       └── controllers/
-│           ├── subject.controller.ts
-│           └── subject.controller.spec.ts       ← Controller tests
+│           └── *.controller.spec.ts         ← Controller tests
 └── shared/
     └── mappers/
-        ├── itba.mappers.ts
-        └── itba.mappers.spec.ts                 ← Mapper tests
+        └── *.spec.ts                        ← Mapper tests
 
 test/
 ├── utils/
-│   ├── prisma-mock.helper.ts                    ← Test utilities
-│   └── test-factories.ts                        ← Test data factories
-├── jest-e2e.json                                ← E2E test config
-└── *.e2e-spec.ts                                ← E2E tests
+│   ├── e2e-test-base.ts                     ← E2E test framework
+│   └── test-db-setup.ts                     ← Database utilities
+├── jest-e2e.json                            ← E2E test config
+└── *.e2e-spec.ts                            ← E2E tests
 ```
 
-## Running Tests
+---
+
+## Unit Tests
+
+### Running Unit Tests
 
 ```bash
-# Run all tests
+# Run all unit tests
 npm test
 
-# Run tests in watch mode
+# Watch mode for development
 npm run test:watch
 
-# Run tests with coverage
+# With coverage report
 npm run test:cov
-
-# Run E2E tests
-npm run test:e2e
 
 # Run specific test file
 npm test -- subject.service.spec.ts
+
+# In Docker (consistent environment)
+npm run test:docker
 ```
 
-## Writing Tests
+### Writing Unit Tests
 
-### Repository Tests
+Unit tests mock external dependencies (Prisma, repositories, services) and test business logic in isolation.
 
-Repository tests should mock Prisma and test:
-- CRUD operations
-- Query methods
-- Error handling (Prisma error codes)
-- Edge cases
-
-Example:
+**Repository Example:**
 ```typescript
 describe('SubjectRepositoryImpl', () => {
   let repository: SubjectRepositoryImpl;
@@ -77,7 +86,7 @@ describe('SubjectRepositoryImpl', () => {
   });
 
   it('should find subject by id', async () => {
-    const mockSubject = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
+    const mockSubject = { id: '93.42', name: 'Cálculo I', credits: 6 };
     prisma.subject.findUnique.mockResolvedValue(mockSubject);
 
     const result = await repository.findById('93.42');
@@ -87,247 +96,303 @@ describe('SubjectRepositoryImpl', () => {
 });
 ```
 
-### Service Tests
-
-Service tests should mock repositories and test:
-- Business logic
-- Repository method calls
-- Data transformation
-- Error propagation
-
-Example:
+**Service Example:**
 ```typescript
 describe('SubjectService', () => {
   let service: SubjectService;
   let repository: jest.Mocked<SubjectRepository>;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const module = await Test.createTestingModule({
       providers: [
         SubjectService,
-        {
-          provide: SUBJECT_REPOSITORY,
-          useValue: mockRepository,
-        },
+        { provide: SUBJECT_REPOSITORY, useValue: mockRepository },
       ],
     }).compile();
 
     service = module.get<SubjectService>(SubjectService);
-    repository = module.get(SUBJECT_REPOSITORY);
   });
 
   it('should create subject', async () => {
-    const dto = { id: '93.42', name: 'Cálculo I', credits: 6 };
-    const subject = createTestSubject('93.42', 'Cálculo I', 6);
-    repository.create.mockResolvedValue(subject);
+    repository.create.mockResolvedValue(expectedSubject);
 
     const result = await service.createSubject(dto);
 
     expect(repository.create).toHaveBeenCalled();
-    expect(result).toEqual(subject);
+    expect(result).toEqual(expectedSubject);
   });
 });
 ```
 
-### Controller Tests
+---
 
-Controller tests should mock services and test:
-- HTTP request/response handling
-- DTO validation
-- Exception handling
-- Service method invocations
+## E2E Tests
 
-Example:
+E2E tests use a real PostgreSQL database and test the full application stack.
+
+### Running E2E Tests
+
+```bash
+# Run locally (requires TEST_DATABASE_URL in .env)
+npm run test:e2e
+
+# Run in Docker (recommended - isolated database)
+npm run test:e2e:docker
+
+# Rebuild Docker images and run
+npm run test:e2e:docker:build
+
+# Clean up Docker containers
+npm run test:e2e:docker:down
+```
+
+### Docker E2E Testing
+
+Docker provides:
+- ✅ Isolated PostgreSQL 16 database (uses tmpfs for speed)
+- ✅ Consistent environment (Node 20, same dependencies)
+- ✅ No local database setup required
+- ✅ CI/CD ready
+
+**What happens:**
+1. Spins up fresh PostgreSQL container on port 5434
+2. Runs Prisma migrations
+3. Executes all E2E tests with proper isolation
+4. Tears down containers after completion
+
+### E2E Test Isolation
+
+Our E2E tests guarantee isolation:
+
+1. **Separate Prisma instances** - Each test suite gets its own `PrismaClient`
+2. **Sequential execution** - Tests run with `--runInBand` to prevent race conditions
+3. **Database reset** - After each test, database is cleaned and re-seeded
+4. **Seed data verification** - Before each test, seed data integrity is checked
+
+**Seed Data (preserved across tests):**
+- Careers: `I` (Ingeniería Informática), `E` (Ingeniería Electrónica)
+- Plans: `2023`, `2015`
+
+### Writing E2E Tests
+
 ```typescript
-describe('SubjectController', () => {
-  let controller: SubjectController;
-  let service: jest.Mocked<SubjectService>;
+describe('My Feature (e2e)', () => {
+  let testBase: E2ETestBase;
+
+  beforeAll(async () => {
+    testBase = await setupE2ETest();
+  });
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [SubjectController],
-      providers: [
-        {
-          provide: SubjectService,
-          useValue: {
-            getSubjectById: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
-
-    controller = module.get<SubjectController>(SubjectController);
-    service = module.get(SubjectService);
+    await testBase.beforeEachTest();  // Verifies seed data
   });
 
-  it('should throw NotFoundException when subject not found', async () => {
-    service.getSubjectById.mockResolvedValue(null);
-
-    await expect(controller.getSubjectById('missing')).rejects.toThrow(NotFoundException);
+  afterEach(async () => {
+    await testBase.afterEachTest();   // Cleans & re-seeds
   });
-});
-```
 
-### Mapper Tests
+  afterAll(async () => {
+    await testBase.afterAllTests();
+  });
 
-Mapper tests should test:
-- Data transformations
-- Array operations
-- Null/undefined handling
-- Edge cases
-
-Example:
-```typescript
-describe('ItbaMappers', () => {
-  it('should map subject to DTO', () => {
-    const subject = createTestSubject('93.42', 'Cálculo I', 6);
-
-    const result = ItbaMappers.subjectToDto(subject);
-
-    expect(result).toEqual({
-      id: '93.42',
-      name: 'Cálculo I',
-      credits: 6,
+  it('should create test data', async () => {
+    // Use TEST* prefix for test data
+    await testBase.getPrisma().career.create({
+      data: { id: 'TEST_CAREER', name: 'Test Career' },
     });
+
+    const response = await request(testBase.getApp().getHttpServer())
+      .get('/api/v1/careers/TEST_CAREER')
+      .expect(200);
+
+    expect(response.body.name).toBe('Test Career');
   });
 });
 ```
 
-## Test Utilities
+**Rules for E2E Tests:**
+- ✅ Read seed data (careers I/E, plans 2023/2015)
+- ✅ Create new test data with `TEST*` prefix
+- ❌ Never modify or delete seed data
 
-### Mock Helpers
+---
 
-Located in `test/utils/prisma-mock.helper.ts`:
+## Docker Testing
 
-```typescript
-import { createMockPrismaService } from '../../../test/utils/prisma-mock.helper';
+### Available Commands
 
-const prisma = createMockPrismaService();
+| Command | Description |
+|---------|-------------|
+| `npm run test:docker` | Run unit tests in Docker |
+| `npm run test:docker:build` | Rebuild and run unit tests |
+| `npm run test:e2e:docker` | Run E2E tests in Docker |
+| `npm run test:e2e:docker:build` | Rebuild and run E2E tests |
+| `npm run test:e2e:docker:down` | Clean up test containers |
+
+### Why Use Docker?
+
+1. **Consistency** - Same Node.js, PostgreSQL, and dependencies everywhere
+2. **No Setup** - No need to install/configure PostgreSQL locally
+3. **Isolation** - Fresh database for every test run
+4. **CI/CD Ready** - Same commands work in pipelines
+
+### Architecture
+
+```
+┌──────────────────────────────────────┐
+│  docker-compose.test.yml             │
+├──────────────────────────────────────┤
+│  ┌────────────────┐  ┌────────────┐ │
+│  │ postgres-test  │  │test-runner │ │
+│  │  (port 5434)   │◄─┤  (Node 20) │ │
+│  │  PostgreSQL 16 │  │  Prisma    │ │
+│  │  (tmpfs)       │  │  Jest      │ │
+│  └────────────────┘  └────────────┘ │
+└──────────────────────────────────────┘
 ```
 
-### Test Factories
+---
 
-Located in `test/utils/test-factories.ts`:
+## Test Coverage
 
-```typescript
-import { createTestSubject, createTestCareer } from '../../../test/utils/test-factories';
+### Current Coverage
+Run `npm run test:cov` to see current coverage statistics.
 
-const subject = createTestSubject('93.42', 'Cálculo I', 6);
-const career = createTestCareer('I', 'Ingeniería Informática', ['2023']);
+### Coverage Goals
+- **Current minimum**: 10%
+- **Target**: 80%+
+- **Excluded**: DTOs, interfaces, modules, main.ts
+
+### View Coverage Report
+```bash
+npm run test:cov
+open coverage/index.html  # Or just open the file in browser
 ```
 
-## Coverage Requirements
-
-- **Minimum Global Coverage**: 10% (will increase over time)
-- **Target Coverage**: 80%+
-- Excluded from coverage:
-  - DTOs
-  - Interfaces
-  - Modules
-  - Index files
-  - Main entry point
-
-## Coverage Reports
-
-After running `npm run test:cov`, coverage reports are available in:
-
-- **Terminal**: Summary in console
-- **HTML**: `coverage/index.html` - Open in browser for detailed view
-- **LCOV**: `coverage/lcov.info` - For CI/CD integration
-
-## Best Practices
-
-1. **Test Naming**: Use descriptive test names that explain what is being tested
-2. **Arrange-Act-Assert**: Structure tests with clear setup, execution, and verification
-3. **One Assertion Per Test**: Focus each test on a single behavior
-4. **Mock External Dependencies**: Always mock databases, APIs, and external services
-5. **Test Edge Cases**: Include tests for null, undefined, empty arrays, errors
-6. **Use Factories**: Utilize test factories for consistent test data
-7. **Clean Up**: Use `afterEach` to reset mocks and clean up state
-
-## Common Patterns
-
-### Testing Prisma Error Handling
-
-```typescript
-it('should throw custom exception on Prisma error', async () => {
-  const prismaError = { code: 'P2002', meta: {} };
-  prisma.subject.create.mockRejectedValue(prismaError);
-
-  await expect(repository.create(subject)).rejects.toThrow(
-    SubjectAlreadyExistsException
-  );
-});
-```
-
-### Testing NestJS Dependency Injection
-
-```typescript
-const module: TestingModule = await Test.createTestingModule({
-  providers: [
-    ServiceUnderTest,
-    {
-      provide: DEPENDENCY_TOKEN,
-      useValue: mockDependency,
-    },
-  ],
-}).compile();
-```
-
-## Current Test Coverage
-
-As of the latest update:
-
-- **Test Suites**: 4
-- **Total Tests**: 63
-- **Coverage**:
-  - Subject Repository: 100%
-  - Subject Service: 100%
-  - Itba Mappers: 100%
-  - Subject Controller: ~75%
-
-## Next Steps
-
-To improve coverage further:
-1. Add tests for remaining repositories (Career, Classroom, Commission, SubjectPlan)
-2. Add tests for remaining services
-3. Add tests for remaining controllers
-4. Add integration/E2E tests
-5. Gradually increase coverage thresholds
+---
 
 ## CI/CD Integration
 
-The testing setup is ready for CI/CD integration. Add to your pipeline:
-
+### GitHub Actions
 ```yaml
-# Example GitHub Actions
-- name: Run tests
-  run: npm test
+name: Tests
 
-- name: Generate coverage
-  run: npm run test:cov
+on: [push, pull_request]
 
-- name: Upload coverage
-  uses: codecov/codecov-action@v3
-  with:
-    files: ./coverage/lcov.info
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Unit Tests
+        run: npm run test:docker:build
+
+      - name: Run E2E Tests
+        run: npm run test:e2e:docker:build
 ```
+
+### GitLab CI
+```yaml
+test:
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - npm run test:docker:build
+    - npm run test:e2e:docker:build
+```
+
+---
 
 ## Troubleshooting
 
-### Test Timeout
-
-If tests timeout, increase the timeout:
-```typescript
-jest.setTimeout(10000);
+### Tests fail locally but pass in Docker
+Run tests in Docker to match CI environment:
+```bash
+npm run test:e2e:docker:build
 ```
 
-### Module Resolution
+### Port 5434 already in use
+Change port in `docker-compose.test.yml`:
+```yaml
+postgres-test:
+  ports:
+    - "5435:5432"
+```
 
-If imports fail, ensure paths are configured in both:
-- `tsconfig.json` - paths
-- `jest.config.js` - moduleNameMapper
+### Seed data integrity check failed
+A test modified seed data (careers I/E or plans 2023/2015).
+- Use `TEST*` prefix for new data
+- Never update/delete seed data in tests
 
-### Prisma Mocking
+### Tests pass individually but fail together
+This indicates a test isolation issue.
+- Ensure all E2E tests have `beforeEach` and `afterEach` hooks
+- Check for shared state between tests
+- Verify test data uses unique IDs
 
-Always use `jest-mock-extended` for Prisma mocking to avoid type issues.
+### Docker build is slow
+Use cached images after first build:
+```bash
+npm run test:e2e:docker  # Uses cache
+```
+
+Only rebuild when dependencies change:
+```bash
+npm run test:e2e:docker:build
+```
+
+---
+
+## Best Practices
+
+### Unit Tests
+1. **Mock all external dependencies** (Prisma, HTTP, file system)
+2. **Test one thing at a time** - focused test cases
+3. **Use descriptive test names** - explain what is being tested
+4. **Follow AAA pattern** - Arrange, Act, Assert
+
+### E2E Tests
+1. **Always use Docker** before pushing to ensure CI will pass
+2. **Use meaningful IDs** with `TEST*` prefix
+3. **Keep tests independent** - each test should work in isolation
+4. **Don't modify seed data** - create your own test data
+5. **Clean up automatically** - framework handles this via `afterEach`
+
+### General
+1. **Run tests before committing** - catch issues early
+2. **Write tests alongside code** - not as an afterthought
+3. **Keep tests maintainable** - refactor test code too
+4. **Use test utilities** - leverage helper functions and factories
+
+---
+
+## Quick Reference
+
+```bash
+# Local Testing
+npm test                    # Unit tests
+npm run test:e2e           # E2E tests
+npm run test:cov           # Coverage report
+
+# Docker Testing (Recommended)
+npm run test:docker             # Unit tests in Docker
+npm run test:e2e:docker         # E2E tests in Docker
+npm run test:e2e:docker:build   # Rebuild & run E2E tests
+
+# Development
+npm run test:watch         # Watch mode for unit tests
+npm test -- my-file.spec   # Run specific test
+
+# Cleanup
+npm run test:e2e:docker:down    # Remove test containers
+```
+
+---
+
+## Need Help?
+
+- View Docker logs: `docker-compose -f docker-compose.test.yml logs`
+- Connect to test DB during run: `localhost:5434`
+- Debug locally: `npm run test:debug`

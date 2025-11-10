@@ -25,7 +25,7 @@ describe('SubjectRepositoryImpl', () => {
         createPrismaSubjectResult('93.50', 'Probabilidad', 6),
       ];
 
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findAll();
 
@@ -51,7 +51,7 @@ describe('SubjectRepositoryImpl', () => {
   describe('findById', () => {
     it('should return subject when found', async () => {
       const mockSubject = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
-      prisma.subject.findUnique.mockResolvedValue(mockSubject);
+      prisma.subject.findUnique.mockResolvedValue(mockSubject as any);
 
       const result = await repository.findById('93.42');
 
@@ -81,7 +81,7 @@ describe('SubjectRepositoryImpl', () => {
         createPrismaSubjectResult('93.43', 'Cálculo II', 6),
       ];
 
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findByName('Cálculo');
 
@@ -112,7 +112,7 @@ describe('SubjectRepositoryImpl', () => {
       const subject = createTestSubject('93.42', 'Cálculo I', 6);
       const mockResult = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
 
-      prisma.subject.create.mockResolvedValue(mockResult);
+      prisma.subject.create.mockResolvedValue(mockResult as any);
 
       const result = await repository.create(subject);
 
@@ -156,7 +156,7 @@ describe('SubjectRepositoryImpl', () => {
       const subject = createTestSubject('93.42', 'Cálculo I Updated', 8);
       const mockResult = createPrismaSubjectResult('93.42', 'Cálculo I Updated', 8);
 
-      prisma.subject.update.mockResolvedValue(mockResult);
+      prisma.subject.update.mockResolvedValue(mockResult as any);
 
       const result = await repository.update(subject);
 
@@ -256,7 +256,7 @@ describe('SubjectRepositoryImpl', () => {
         createPrismaSubjectResult('93.50', 'Probabilidad', 6),
       ];
 
-      prisma.subject.findMany.mockResolvedValue(mockSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findByIds(['93.42', '93.50']);
 
