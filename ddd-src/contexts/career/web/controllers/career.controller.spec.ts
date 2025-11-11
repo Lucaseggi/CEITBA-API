@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { CareerController } from './career.controller';
 import { CareerService } from '../../application/services/career.service';
 import { createTestCareer } from 'test/utils/test-factories';
@@ -102,6 +102,104 @@ describe('CareerController', () => {
 
       expect(service.createCareer).toHaveBeenCalledWith(createDto);
       expect(result).toEqual(mockCareer);
+    });
+
+    it('should throw BadRequestException when career already exists', async () => {
+      const createDto = { id: 'I', name: 'Ingeniería Informática' };
+      const error = new Error('Career with id I already exists');
+
+      service.createCareer.mockRejectedValue(error);
+
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        'Career with id I already exists'
+      );
+    });
+
+    it('should throw BadRequestException when error message contains "already exists"', async () => {
+      const createDto = { id: 'E', name: 'Ingeniería Electrónica' };
+      const error = new Error('A career already exists with this identifier');
+
+      service.createCareer.mockRejectedValue(error);
+
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        'A career already exists with this identifier'
+      );
+    });
+
+    it('should re-throw error when it does not contain "already exists"', async () => {
+      const createDto = { id: 'I', name: 'Ingeniería Informática' };
+      const error = new Error('Database connection failed');
+
+      service.createCareer.mockRejectedValue(error);
+
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        'Database connection failed'
+      );
+      await expect(controller.createCareer(createDto)).rejects.not.toThrow(
+        BadRequestException
+      );
+    });
+
+    it('should re-throw error when error has no message property', async () => {
+      const createDto = { id: 'I', name: 'Ingeniería Informática' };
+      const error = { code: 'UNKNOWN_ERROR' };
+
+      service.createCareer.mockRejectedValue(error);
+
+      await expect(controller.createCareer(createDto)).rejects.toEqual(
+        { code: 'UNKNOWN_ERROR' }
+      );
+      await expect(controller.createCareer(createDto)).rejects.not.toThrow(
+        BadRequestException
+      );
+    });
+
+    it('should handle case-sensitive "already exists" check', async () => {
+      const createDto = { id: 'I', name: 'Ingeniería Informática' };
+      const error = new Error('Career Already Exists with this ID');
+
+      service.createCareer.mockRejectedValue(error);
+
+      // Should NOT catch this because "Already Exists" has different case
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        'Career Already Exists with this ID'
+      );
+      await expect(controller.createCareer(createDto)).rejects.not.toThrow(
+        BadRequestException
+      );
+    });
+
+    it('should throw BadRequestException for partial match of "already exists"', async () => {
+      const createDto = { id: 'I', name: 'Ingeniería Informática' };
+      const error = new Error('Resource already exists in the system');
+
+      service.createCareer.mockRejectedValue(error);
+
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(controller.createCareer(createDto)).rejects.toThrow(
+        'Resource already exists in the system'
+      );
+    });
+
+    it('should create career with plans array when provided', async () => {
+      const createDto = { id: 'I', name: 'Ingeniería Informática', plans: ['2023', '2015'] };
+      const mockCareer = createTestCareer('I', 'Ingeniería Informática', ['2023', '2015']);
+
+      service.createCareer.mockResolvedValue(mockCareer);
+
+      const result = await controller.createCareer(createDto);
+
+      expect(service.createCareer).toHaveBeenCalledWith(createDto);
+      expect(result).toEqual(mockCareer);
+      expect(result.plans).toEqual(['2023', '2015']);
     });
   });
 

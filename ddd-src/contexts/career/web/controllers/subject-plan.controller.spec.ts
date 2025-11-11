@@ -1,8 +1,10 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { SubjectPlanController } from './subject-plan.controller';
 import { createTestSubjectPlan } from 'test/utils/test-factories';
 import { SubjectPlanQueryDto, CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
+import { ResourceNotFoundException, ValidationException } from '../../domain/exceptions/domain.exceptions';
+import { ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 
 describe('SubjectPlanController', () => {
   let controller: SubjectPlanController;
@@ -83,6 +85,33 @@ describe('SubjectPlanController', () => {
         section: undefined,
         type: 'elective',
       });
+    });
+
+    it('should throw NotFoundException when ResourceNotFoundException is thrown by service', async () => {
+      const query: SubjectPlanQueryDto = { year: 1 };
+      service.getSubjectsByPlanWithFilters.mockRejectedValue(
+        new ResourceNotFoundException('Plan', '9999')
+      );
+
+      await expect(controller.getSubjectsByPlan('9999', query)).rejects.toThrow(
+        NotFoundException
+      );
+      await expect(controller.getSubjectsByPlan('9999', query)).rejects.toThrow(
+        "Plan with identifier '9999' not found"
+      );
+    });
+
+    it('should re-throw non-ResourceNotFoundException errors', async () => {
+      const query: SubjectPlanQueryDto = { year: 1 };
+      const genericError = new Error('Database connection failed');
+      service.getSubjectsByPlanWithFilters.mockRejectedValue(genericError);
+
+      await expect(controller.getSubjectsByPlan('2023', query)).rejects.toThrow(
+        'Database connection failed'
+      );
+      await expect(controller.getSubjectsByPlan('2023', query)).rejects.not.toThrow(
+        NotFoundException
+      );
     });
   });
 
@@ -198,6 +227,78 @@ describe('SubjectPlanController', () => {
         planId: '2023',
       });
     });
+
+    it('should throw BadRequestException when ResourceNotFoundException is thrown', async () => {
+      const createDto: CreateSubjectPlanDto = {
+        subjectId: 'NON_EXISTENT',
+        section: 'CIENCIAS_BASICAS',
+      };
+
+      service.createSubjectPlan.mockRejectedValue(
+        new ResourceNotFoundException('Subject', 'NON_EXISTENT')
+      );
+
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.toThrow(
+        "Subject with identifier 'NON_EXISTENT' not found"
+      );
+    });
+
+    it('should throw BadRequestException when ValidationException is thrown', async () => {
+      const createDto: CreateSubjectPlanDto = {
+        subjectId: '93.42',
+        section: 'INVALID_SECTION',
+      };
+
+      service.createSubjectPlan.mockRejectedValue(
+        new ValidationException('section', 'INVALID_SECTION', 'Invalid section name')
+      );
+
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.toThrow(
+        "Validation failed for field 'section' with value 'INVALID_SECTION': Invalid section name"
+      );
+    });
+
+    it('should throw BadRequestException when ForeignKeyConstraintViolationException is thrown', async () => {
+      const createDto: CreateSubjectPlanDto = {
+        subjectId: '93.42',
+        section: 'CIENCIAS_BASICAS',
+        dependencies: ['99.99'],
+      };
+
+      service.createSubjectPlan.mockRejectedValue(
+        new ForeignKeyConstraintViolationException('Dependency subject 99.99 does not exist')
+      );
+
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.toThrow(
+        BadRequestException
+      );
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.toThrow(
+        'Dependency subject 99.99 does not exist'
+      );
+    });
+
+    it('should re-throw unexpected errors', async () => {
+      const createDto: CreateSubjectPlanDto = {
+        subjectId: '93.42',
+        section: 'CIENCIAS_BASICAS',
+      };
+
+      const genericError = new Error('Unexpected database error');
+      service.createSubjectPlan.mockRejectedValue(genericError);
+
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.toThrow(
+        'Unexpected database error'
+      );
+      await expect(controller.createSubjectPlan('2023', createDto)).rejects.not.toThrow(
+        BadRequestException
+      );
+    });
   });
 
   describe('updateSubjectPlan', () => {
@@ -250,6 +351,52 @@ describe('SubjectPlanController', () => {
 
       expect(service.updateSubjectPlan).toHaveBeenCalledWith('2023', '93.42', updateDto);
     });
+
+    it('should throw NotFoundException when ResourceNotFoundException is thrown by service', async () => {
+      const updateDto: UpdateSubjectPlanDto = { year: 2 };
+      service.updateSubjectPlan.mockRejectedValue(
+        new ResourceNotFoundException('SubjectPlan', '2023-NON_EXISTENT')
+      );
+
+      await expect(
+        controller.updateSubjectPlan('2023', 'NON_EXISTENT', updateDto)
+      ).rejects.toThrow(NotFoundException);
+      await expect(
+        controller.updateSubjectPlan('2023', 'NON_EXISTENT', updateDto)
+      ).rejects.toThrow("SubjectPlan with identifier '2023-NON_EXISTENT' not found");
+    });
+
+    it('should throw BadRequestException when ValidationException is thrown by service', async () => {
+      const updateDto: UpdateSubjectPlanDto = {
+        year: -1
+      };
+      service.updateSubjectPlan.mockRejectedValue(
+        new ValidationException('year', -1, 'Year must be positive')
+      );
+
+      await expect(
+        controller.updateSubjectPlan('2023', '93.42', updateDto)
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        controller.updateSubjectPlan('2023', '93.42', updateDto)
+      ).rejects.toThrow("Validation failed for field 'year' with value '-1': Year must be positive");
+    });
+
+    it('should re-throw unexpected errors', async () => {
+      const updateDto: UpdateSubjectPlanDto = { year: 2 };
+      const genericError = new Error('Database transaction failed');
+      service.updateSubjectPlan.mockRejectedValue(genericError);
+
+      await expect(
+        controller.updateSubjectPlan('2023', '93.42', updateDto)
+      ).rejects.toThrow('Database transaction failed');
+      await expect(
+        controller.updateSubjectPlan('2023', '93.42', updateDto)
+      ).rejects.not.toThrow(NotFoundException);
+      await expect(
+        controller.updateSubjectPlan('2023', '93.42', updateDto)
+      ).rejects.not.toThrow(BadRequestException);
+    });
   });
 
   describe('deleteSubjectPlan', () => {
@@ -270,6 +417,31 @@ describe('SubjectPlanController', () => {
       );
       await expect(controller.deleteSubjectPlan('2023', 'NON_EXISTENT')).rejects.toThrow(
         'Subject plan not found'
+      );
+    });
+
+    it('should throw NotFoundException when ResourceNotFoundException is thrown by service', async () => {
+      service.deleteSubjectPlan.mockRejectedValue(
+        new ResourceNotFoundException('SubjectPlan', '2023-99.99')
+      );
+
+      await expect(controller.deleteSubjectPlan('2023', '99.99')).rejects.toThrow(
+        NotFoundException
+      );
+      await expect(controller.deleteSubjectPlan('2023', '99.99')).rejects.toThrow(
+        "SubjectPlan with identifier '2023-99.99' not found"
+      );
+    });
+
+    it('should re-throw unexpected errors', async () => {
+      const genericError = new Error('Cannot delete due to constraint');
+      service.deleteSubjectPlan.mockRejectedValue(genericError);
+
+      await expect(controller.deleteSubjectPlan('2023', '93.42')).rejects.toThrow(
+        'Cannot delete due to constraint'
+      );
+      await expect(controller.deleteSubjectPlan('2023', '93.42')).rejects.not.toThrow(
+        NotFoundException
       );
     });
   });

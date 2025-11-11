@@ -36,11 +36,4 @@ export class SubjectPlan {
   public isElective(): boolean {
     return this.year === 0 && this.semester === 0;
   }
-
-  public getAcademicPeriod(): string {
-    if (this.isElective()) {
-      return "Elective";
-    }
-    return `Year ${this.year}, Semester ${this.semester}`;
-  }
 }
