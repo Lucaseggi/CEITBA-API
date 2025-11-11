@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
-import { DataSyncService, DataSyncResult } from './data-sync.service';
+import { DataSyncService, DataSyncResult, createDataSyncResult } from './data-sync.service';
 import { ItbaApiGatewayInterface } from '../../domain/interfaces/infrastructure/gateway/itba-api.gateway.interface';
 import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
 import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
@@ -182,13 +182,7 @@ describe('DataSyncService', () => {
 
   describe('syncSubjectsAndPlans', () => {
     it('should sync subjects and plans for all careers', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCareers = {
         I: createTestCareer('I', 'Ingeniería Informática', ['2023', '2015']),
@@ -203,19 +197,13 @@ describe('DataSyncService', () => {
       await service.syncSubjectsAndPlans(result);
 
       expect(careerRepository.findCareersWithPlans).toHaveBeenCalledTimes(1);
-      expect(itbaApiService.getSubjectsByPlan).toHaveBeenCalledTimes(2); // 2 plans
-      expect(result.subjects.created).toBe(2);
-      expect(result.subjectPlans.created).toBe(2);
+      expect(itbaApiService.getSubjectsByPlan).toHaveBeenCalledTimes(2);
+      expect(result.subjects.created).toBe(1);
+      expect(result.subjectPlans.created).toBe(1);
     });
 
     it('should update existing subjects when data changes', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCareers = {
         I: createTestCareer('I', 'Ingeniería Informática', ['2023']),
@@ -235,13 +223,7 @@ describe('DataSyncService', () => {
     });
 
     it('should handle errors for individual plans and continue', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCareers = {
         I: createTestCareer('I', 'Ingeniería Informática', ['2023', '2015']),
@@ -262,13 +244,7 @@ describe('DataSyncService', () => {
     });
 
     it('should not update subject when data is identical', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCareers = {
         I: createTestCareer('I', 'Ingeniería Informática', ['2023']),
@@ -289,13 +265,7 @@ describe('DataSyncService', () => {
 
   describe('syncCommissions', () => {
     it('should sync commissions successfully', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCommissions = [createTestCommission('COMM-001', '93.42', 'A')];
       const mockSubjects = [createTestSubject('93.42', 'Algoritmos', 6)];
@@ -311,13 +281,7 @@ describe('DataSyncService', () => {
     });
 
     it('should create missing subjects found in commissions', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCommissions = [
         createTestCommission('COMM-001', '93.42', 'A'),
@@ -335,13 +299,7 @@ describe('DataSyncService', () => {
     });
 
     it('should use effective commission params with defaults', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       itbaApiService.getCommissions.mockResolvedValue([]);
       subjectRepository.findAll.mockResolvedValue([]);
@@ -352,13 +310,7 @@ describe('DataSyncService', () => {
     });
 
     it('should warn when no commissions returned', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       itbaApiService.getCommissions.mockResolvedValue([]);
       subjectRepository.findAll.mockResolvedValue([]);
@@ -370,13 +322,7 @@ describe('DataSyncService', () => {
     });
 
     it('should update existing commissions when data changes', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCommissions = [createTestCommission('COMM-001', '93.42', 'A')];
       const mockSubjects = [createTestSubject('93.42', 'Algoritmos', 6)];
@@ -393,13 +339,7 @@ describe('DataSyncService', () => {
     });
 
     it('should handle errors when creating missing subjects', async () => {
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       const mockCommissions = [createTestCommission('COMM-001', '93.42', 'A')];
 

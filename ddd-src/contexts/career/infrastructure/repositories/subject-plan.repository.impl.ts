@@ -72,10 +72,6 @@ export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
         return this.find(new SubjectPlanFilters());
     }
 
-    async findBySubjectId(subjectId: string): Promise<SubjectPlan[]> {
-        return this.find(new SubjectPlanFilters(undefined, subjectId));
-    }
-
     async findByPlanAndSubject(planId: string, subjectId: string): Promise<SubjectPlan | null> {
         const results = await this.find(new SubjectPlanFilters(planId, subjectId));
         return results.length > 0 ? results[0] : null;

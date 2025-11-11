@@ -18,24 +18,40 @@ import {
   ITBA_API_SERVICE,
 } from "@boot/di/injection-tokens";
 
+interface SyncStats {
+  created: number;
+  updated: number;
+  errors: number;
+}
+
 export interface DataSyncResult {
-  subjects: {
-    created: number;
-    updated: number;
-    errors: number;
-  };
-  subjectPlans: {
-    created: number;
-    updated: number;
-    errors: number;
-  };
-  commissions: {
-    created: number;
-    updated: number;
-    errors: number;
-  };
+  subjects: SyncStats;
+  subjectPlans: SyncStats;
+  commissions: SyncStats;
   totalProcessed: number;
   duration: number;
+}
+
+function createSyncStats(): SyncStats {
+  return { created: 0, updated: 0, errors: 0 };
+}
+
+function addStats(source1: SyncStats, source2: SyncStats) {
+  const stats = createSyncStats();
+  stats.created = source2.created + source1.created;
+  stats.updated = source2.updated + source1.updated;
+  stats.errors = source2.errors + source1.errors;
+  return stats;
+}
+
+export function createDataSyncResult(): DataSyncResult {
+  return {
+    subjects: createSyncStats(),
+    subjectPlans: createSyncStats(),
+    commissions: createSyncStats(),
+    totalProcessed: 0,
+    duration: 0,
+  };
 }
 
 export interface DataSyncOptions {
@@ -57,7 +73,7 @@ export class DataSyncService {
     private readonly commissionRepository: CommissionRepositoryInterface,
     @Inject(CAREER_REPOSITORY)
     private readonly careerRepository: CareerRepositoryInterface,
-  ) {}
+  ) { }
 
   async syncAllData(options?: DataSyncOptions): Promise<DataSyncResult> {
     const startTime = Date.now();
@@ -112,11 +128,15 @@ export class DataSyncService {
             const subjectPlans =
               await this.itbaApiService.getSubjectsByPlan(planId);
 
-            for (const subjectPlan of subjectPlans) {
-              await this.upsertSubject(subjectPlan.subject, result);
+            result.subjects = await this.syncEntities(
+              subjectPlans.map(sp => sp.subject),
+              (subject) => this.upsertSubject(subject)
+            );
 
-              await this.upsertSubjectPlan(subjectPlan, result);
-            }
+            result.subjectPlans = await this.syncEntities(
+              subjectPlans,
+              (plan) => this.upsertSubjectPlan(plan)
+            );
           } catch (error) {
             this.logger.error(
               `Failed to sync plan ${planId} for career ${careerId}:`,
@@ -229,55 +249,53 @@ export class DataSyncService {
     };
   }
 
-  private async upsertSubject(
-    subject: Subject,
-    result: DataSyncResult,
-  ): Promise<void> {
+  private async upsertSubject(subject: Subject): Promise<SyncStats> {
+    const stats = createSyncStats();
+
     try {
       const existingSubject = await this.subjectRepository.findById(subject.id);
-
       if (existingSubject) {
         if (
           existingSubject.name !== subject.name ||
           existingSubject.credits !== subject.credits
         ) {
           await this.subjectRepository.update(subject);
-          result.subjects.updated++;
-          this.logger.debug(`Updated subject: ${subject.id}`);
+          stats.updated++;
+          this.logger.debug`Updated subject: ${subject.id}`;
         }
       } else {
         await this.subjectRepository.create(subject);
-        result.subjects.created++;
-        this.logger.debug(`Created subject: ${subject.id}`);
+        stats.created++;
+        this.logger.debug`Created subject: ${subject.id}`;
       }
     } catch (error) {
       this.logger.error(`Failed to upsert subject ${subject.id}:`, error);
-      result.subjects.errors++;
+      stats.errors++;
     }
+
+    return stats;
   }
 
-  private async upsertSubjectPlan(
-    subjectPlan: SubjectPlan,
-    result: DataSyncResult,
-  ): Promise<void> {
+  private async upsertSubjectPlan(subjectPlan: SubjectPlan): Promise<SyncStats> {
+    const stats = { created: 0, updated: 0, errors: 0 };
+
     try {
       const existingPlan =
         await this.subjectPlanRepository.findByPlanAndSubject(
           subjectPlan.planId,
           subjectPlan.subjectId,
         );
-
       if (existingPlan) {
         if (this.hasSubjectPlanChanged(existingPlan, subjectPlan)) {
           await this.subjectPlanRepository.update(subjectPlan);
-          result.subjectPlans.updated++;
+          stats.updated++;
           this.logger.debug(
             `Updated subject plan: ${subjectPlan.planId}-${subjectPlan.subjectId}`,
           );
         }
       } else {
         await this.subjectPlanRepository.create(subjectPlan);
-        result.subjectPlans.created++;
+        stats.created++;
         this.logger.debug(
           `Created subject plan: ${subjectPlan.planId}-${subjectPlan.subjectId}`,
         );
@@ -287,8 +305,10 @@ export class DataSyncService {
         `Failed to upsert subject plan ${subjectPlan.planId}-${subjectPlan.subjectId}:`,
         error,
       );
-      result.subjectPlans.errors++;
+      stats.errors++;
     }
+
+    return stats;
   }
 
   private async upsertCommission(
@@ -327,7 +347,7 @@ export class DataSyncService {
       existing.semester !== updated.semester ||
       existing.creditsRequired !== updated.creditsRequired ||
       JSON.stringify(existing.dependencies.sort()) !==
-        JSON.stringify(updated.dependencies.sort())
+      JSON.stringify(updated.dependencies.sort())
     );
   }
 
@@ -352,17 +372,14 @@ export class DataSyncService {
 
     try {
       const subjectPlans = await this.itbaApiService.getSubjectsByPlan(planId);
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       for (const subjectPlan of subjectPlans) {
-        await this.upsertSubject(subjectPlan.subject, result);
-        await this.upsertSubjectPlan(subjectPlan, result);
+        const subjectStats = await this.upsertSubject(subjectPlan.subject);
+        result.subjects = addStats(subjectStats, result.subjects);
+
+        const subjectPlanStats = await this.upsertSubjectPlan(subjectPlan);
+        result.subjectPlans = addStats(subjectPlanStats, result.subjectPlans);
       }
 
       this.logger.log(
@@ -387,13 +404,7 @@ export class DataSyncService {
         subjectCode,
         params,
       );
-      const result: DataSyncResult = {
-        subjects: { created: 0, updated: 0, errors: 0 },
-        subjectPlans: { created: 0, updated: 0, errors: 0 },
-        commissions: { created: 0, updated: 0, errors: 0 },
-        totalProcessed: 0,
-        duration: 0,
-      };
+      const result = createDataSyncResult();
 
       for (const commission of commissions) {
         await this.upsertCommission(commission, result);
@@ -411,5 +422,19 @@ export class DataSyncService {
       );
       throw error;
     }
+  }
+
+  private async syncEntities<T>(
+    entities: T[],
+    upsertFn: (entity: T) => Promise<SyncStats>,
+  ): Promise<SyncStats> {
+    let totals = createSyncStats();
+
+    for (const entity of entities) {
+      const stats = await upsertFn(entity);
+      totals = addStats(stats, totals);
+    }
+
+    return totals;
   }
 }

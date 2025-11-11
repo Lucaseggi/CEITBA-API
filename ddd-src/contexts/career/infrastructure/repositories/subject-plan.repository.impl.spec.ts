@@ -334,6 +334,33 @@ describe('SubjectPlanRepositoryImpl', () => {
 
       await expect(repository.update(subjectPlan)).rejects.toThrow(SubjectPlanNotFoundException);
     });
+
+    it('should throw SubjectPlanAlreadyExistsException when duplicate (P2002)', async () => {
+      const subjectPlan = createTestSubjectPlan();
+      const prismaError = { code: 'P2002', meta: {} };
+
+      prisma.planSubject.update.mockRejectedValue(prismaError);
+
+      await expect(repository.update(subjectPlan)).rejects.toThrow(SubjectPlanAlreadyExistsException);
+    });
+
+    it('should throw ForeignKeyConstraintViolationException when foreign key invalid (P2003)', async () => {
+      const subjectPlan = createTestSubjectPlan();
+      const prismaError = { code: 'P2003', meta: {} };
+
+      prisma.planSubject.update.mockRejectedValue(prismaError);
+
+      await expect(repository.update(subjectPlan)).rejects.toThrow(ForeignKeyConstraintViolationException);
+    });
+
+    it('should throw GenericDomainException for unknown Prisma error code', async () => {
+      const subjectPlan = createTestSubjectPlan();
+      const prismaError = { code: 'P9999', meta: {} };
+
+      prisma.planSubject.update.mockRejectedValue(prismaError);
+
+      await expect(repository.update(subjectPlan)).rejects.toThrow(GenericDomainException);
+    });
   });
 
   describe('delete', () => {
