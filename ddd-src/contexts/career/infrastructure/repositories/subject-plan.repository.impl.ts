@@ -72,10 +72,6 @@ export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
         return this.find(new SubjectPlanFilters());
     }
 
-    async findByPlanId(planId: string): Promise<SubjectPlan[]> {
-        return this.find(new SubjectPlanFilters(planId));
-    }
-
     async findBySubjectId(subjectId: string): Promise<SubjectPlan[]> {
         return this.find(new SubjectPlanFilters(undefined, subjectId));
     }
@@ -213,22 +209,6 @@ export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
                     throw new GenericDomainException('Failed to delete subject plan', err);
             }
         });
-    }
-
-    async findBySection(planId: string, section: string): Promise<SubjectPlan[]> {
-        return this.find(new SubjectPlanFilters(planId, undefined, section));
-    }
-
-    async findElectives(planId: string): Promise<SubjectPlan[]> {
-        return this.find(new SubjectPlanFilters(planId, undefined, undefined, undefined, undefined, true));
-    }
-
-    async findByYear(planId: string, year: number): Promise<SubjectPlan[]> {
-        return this.find(new SubjectPlanFilters(planId, undefined, undefined, year));
-    }
-
-    async findBySemester(planId: string, year: number, semester: number): Promise<SubjectPlan[]> {
-        return this.find(new SubjectPlanFilters(planId, undefined, undefined, year, semester));
     }
 
     private mapToSubjectPlan(planSubjectData: any, subjectData: any | null): SubjectPlan {

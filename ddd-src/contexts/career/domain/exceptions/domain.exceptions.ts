@@ -22,9 +22,3 @@ export class ResourceNotFoundException extends DomainException {
         super(`${resource} with identifier '${identifier}' not found`, cause);
     }
 }
-
-export class ResourceAlreadyExistsException extends DomainException {
-    constructor(resource: string, identifier: string, cause?: Error) {
-        super(`${resource} with identifier '${identifier}' already exists`, cause);
-    }
-}

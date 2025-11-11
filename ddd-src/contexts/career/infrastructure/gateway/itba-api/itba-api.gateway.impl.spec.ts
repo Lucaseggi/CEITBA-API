@@ -737,6 +737,9 @@ describe('ItbaApiGatewayImpl', () => {
 
       mockApiClient.get.mockResolvedValue(mockApiResponse);
 
+      // Suppress console.warn during this test since it's expected behavior
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+
       const result = await gateway.getCommissions({ levels: ['GRADUATE'] });
 
       // Should skip courses without times

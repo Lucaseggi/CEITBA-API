@@ -18,15 +18,10 @@ describe('SubjectPlanService', () => {
   beforeEach(async () => {
     const mockSubjectPlanRepository: jest.Mocked<Partial<SubjectPlanRepositoryInterface>> = {
       find: jest.fn(),
-      findByPlanId: jest.fn(),
       findByPlanAndSubject: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-      findBySection: jest.fn(),
-      findElectives: jest.fn(),
-      findByYear: jest.fn(),
-      findBySemester: jest.fn(),
       findAll: jest.fn(),
     };
 

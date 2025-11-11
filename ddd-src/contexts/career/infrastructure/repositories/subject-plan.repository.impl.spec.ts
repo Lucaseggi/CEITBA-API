@@ -204,37 +204,6 @@ describe('SubjectPlanRepositoryImpl', () => {
     });
   });
 
-  describe('findByPlanId', () => {
-    it('should delegate to find() with planId filter', async () => {
-      const mockPlanSubjects = [
-        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
-      ];
-
-      const mockSubjects = [
-        createPrismaSubjectResult('93.42', 'Cálculo I', 6),
-      ];
-
-      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
-      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
-
-      const result = await repository.findByPlanId('2023');
-
-      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
-        where: { planId: '2023' },
-        orderBy: [{ subjectId: 'asc' }],
-      });
-      expect(result).toHaveLength(1);
-    });
-
-    it('should return empty array when plan has no subjects', async () => {
-      prisma.planSubject.findMany.mockResolvedValue([]);
-
-      const result = await repository.findByPlanId('2023');
-
-      expect(result).toEqual([]);
-    });
-  });
-
   describe('findByPlanAndSubject', () => {
     it('should delegate to find() and return first result', async () => {
       const mockPlanSubjects = [
