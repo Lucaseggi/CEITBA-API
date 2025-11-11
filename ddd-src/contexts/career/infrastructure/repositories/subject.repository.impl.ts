@@ -8,7 +8,7 @@ import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructu
 import { Subject } from "../../domain/entity/subject.model";
 import { GenericDomainException } from "../../domain/exceptions/domain.exceptions";
 
-export class SubjectRepositoryImpl implements SubjectRepositoryInterface {
+export class SubjectRepository implements SubjectRepositoryInterface {
   private readonly prisma: PrismaService;
 
   constructor(prisma: PrismaService) {

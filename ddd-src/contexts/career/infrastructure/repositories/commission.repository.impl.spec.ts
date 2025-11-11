@@ -1,16 +1,16 @@
-import { CommissionRepositoryImpl } from './commission.repository.impl';
+import { CommissionRepository } from './commission.repository.impl';
 import { GenericDomainException } from '../../domain/exceptions';
 import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mock.helper';
 import { createTestCommission, createTestCommissionTime, createPrismaCommissionResult } from 'test/utils/test-factories';
 import { Commission, DayOfWeek, SubjectType } from '../../domain/entity/commission.model';
 
 describe('CommissionRepositoryImpl', () => {
-  let repository: CommissionRepositoryImpl;
+  let repository: CommissionRepository;
   let prisma: MockPrismaService;
 
   beforeEach(() => {
     prisma = createMockPrismaService();
-    repository = new CommissionRepositoryImpl(prisma as any);
+    repository = new CommissionRepository(prisma as any);
   });
 
   describe('findAll', () => {

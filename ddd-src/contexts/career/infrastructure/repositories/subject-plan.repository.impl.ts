@@ -5,7 +5,7 @@ import { SubjectPlanNotFoundException, SubjectPlanAlreadyExistsException, Foreig
 import { GenericDomainException, ResourceNotFoundException } from '../../domain/exceptions/domain.exceptions';
 import { PrismaService } from '@boot/database/prisma.service';
 
-export class SubjectPlanRepositoryImpl implements SubjectPlanRepositoryInterface {
+export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
     private readonly prisma: PrismaService;
 
     constructor(prisma: PrismaService) {

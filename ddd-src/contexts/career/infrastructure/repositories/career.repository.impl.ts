@@ -4,7 +4,7 @@ import { CareerAlreadyExistsException, CareerNotFoundException, ForeignKeyConstr
 import { GenericDomainException } from '../../domain/exceptions';
 import { PrismaService } from '@boot/database/prisma.service';
 
-export class CareerRepositoryImpl implements CareerRepositoryInterface {
+export class CareerRepository implements CareerRepositoryInterface {
     
     private readonly prisma: PrismaService;
 

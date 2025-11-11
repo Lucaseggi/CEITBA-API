@@ -1,4 +1,4 @@
-import { SubjectRepositoryImpl } from './subject.repository.impl';
+import { SubjectRepository } from './subject.repository.impl';
 import { Subject } from "../../domain/entity/subject.model";
 import {
   SubjectNotFoundException,
@@ -10,12 +10,12 @@ import { createTestSubject, createPrismaSubjectResult } from 'test/utils/test-fa
 import { GenericDomainException } from '../../domain/exceptions/domain.exceptions';
 
 describe('SubjectRepositoryImpl', () => {
-  let repository: SubjectRepositoryImpl;
+  let repository: SubjectRepository;
   let prisma: MockPrismaService;
 
   beforeEach(() => {
     prisma = createMockPrismaService();
-    repository = new SubjectRepositoryImpl(prisma as any);
+    repository = new SubjectRepository(prisma as any);
   });
 
   describe('findAll', () => {

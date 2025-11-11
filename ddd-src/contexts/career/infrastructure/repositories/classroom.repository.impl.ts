@@ -2,7 +2,7 @@ import { ClassroomSchedule, Classroom, TimeSlot, DayOfWeek, DayOfWeekMapper } fr
 import { ClassroomRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
 import { PrismaService } from '@boot/database/prisma.service';
 
-export class ClassroomRepositoryImpl implements ClassroomRepositoryInterface {
+export class ClassroomRepository implements ClassroomRepositoryInterface {
 
     private readonly prisma: PrismaService;
     
