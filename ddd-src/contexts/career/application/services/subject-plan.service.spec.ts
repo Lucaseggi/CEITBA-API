@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SubjectPlanService } from './subject-plan.service';
 import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
-import { ItbaApiServiceInterface } from '../../domain/interfaces/infrastructure/gateway/itba-api.service.interface';
+import { ItbaApiGatewayInterface } from '../../domain/interfaces/infrastructure/gateway/itba-api.gateway.interface';
 import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import {
   SUBJECT_PLAN_REPOSITORY,
@@ -17,7 +17,7 @@ describe('SubjectPlanService', () => {
   let service: SubjectPlanService;
   let subjectPlanRepository: jest.Mocked<SubjectPlanRepositoryInterface>;
   let subjectRepository: jest.Mocked<SubjectRepositoryInterface>;
-  let itbaApiService: jest.Mocked<ItbaApiServiceInterface>;
+  let itbaApiService: jest.Mocked<ItbaApiGatewayInterface>;
   let commissionRepository: jest.Mocked<CommissionRepositoryInterface>;
 
   beforeEach(async () => {
@@ -40,7 +40,7 @@ describe('SubjectPlanService', () => {
       findByIds: jest.fn(),
     };
 
-    const mockItbaApiService: jest.Mocked<Partial<ItbaApiServiceInterface>> = {
+    const mockItbaApiService: jest.Mocked<Partial<ItbaApiGatewayInterface>> = {
       getSubjectsByPlan: jest.fn(),
     };
 

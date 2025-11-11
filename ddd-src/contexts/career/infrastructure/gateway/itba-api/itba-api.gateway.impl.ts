@@ -1,13 +1,12 @@
 import { DayOfWeek } from "@career/domain/entity/classroom.model";
 import { Commission, CommissionTime, SubjectType } from "@career/domain/entity/commission.model";
 import { SubjectPlan } from "@career/domain/entity/subject-plan.model";
-import { ITBACareerPlans, CommissionQueryParams, ITBACourseCommissions, ITBASection, ITBASubject, ITBACourseCommission } from "../../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
-import { ItbaApiServiceInterface } from "../../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
+import { ITBACareerPlans, CommissionQueryParams, ITBACourseCommissions, ITBASection, ITBASubject, ITBACourseCommission, ItbaApiGatewayInterface } from "../../../domain/interfaces/infrastructure/gateway/itba-api.gateway.interface";
 import { ApiClient, ExternalApiConfig } from "./api-client.interface";
 import { Subject } from "@career/domain/entity/subject.model";
 
 
-export class ItbaApiServiceImpl implements ItbaApiServiceInterface {
+export class ItbaApiGatewayImpl implements ItbaApiGatewayInterface {
   private readonly apiClient: ApiClient;
   private readonly apiToken: string;
 

@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { SubjectPlan } from "../../domain/entity/subject-plan.model";
 import { SubjectPlanRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
 import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
-import { ItbaApiServiceInterface } from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
+import { ItbaApiGatewayInterface } from "../../domain/interfaces/infrastructure/gateway/itba-api.gateway.interface";
 import { SubjectPlanServiceInterface } from "../../domain/interfaces/application/subject-plan.service.interface";
 import { CommissionService } from "../../domain/interfaces/application/commission.service.interface";
 import {
@@ -27,7 +27,7 @@ export class SubjectPlanService implements SubjectPlanServiceInterface {
     private readonly subjectPlanRepository: SubjectPlanRepositoryInterface,
     @Inject(SUBJECT_REPOSITORY)
     private readonly subjectRepository: SubjectRepositoryInterface,
-    @Inject(ITBA_API_SERVICE) private readonly itbaApiService: ItbaApiServiceInterface,
+    @Inject(ITBA_API_SERVICE) private readonly itbaApiService: ItbaApiGatewayInterface,
     @Inject(COMMISSION_REPOSITORY)
     private readonly commissionRepository: CommissionRepositoryInterface,
   ) {}

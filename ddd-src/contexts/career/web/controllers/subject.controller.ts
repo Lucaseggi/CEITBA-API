@@ -1,6 +1,6 @@
 import { Inject,  Controller, Get, Param, Query, NotFoundException } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ItbaMappers } from '../../infrastructure/mappers/itba.mappers';
+import { ItbaMappers } from '../../application/mappers/itba.mappers';
 import { SubjectResponseDto } from '../dtos/subject.dto';
 import { SectionSubjectsDto } from '../dtos/subject-plan-response.dto';
 import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';

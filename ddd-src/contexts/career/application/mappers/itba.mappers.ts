@@ -1,8 +1,8 @@
 
-import { CareerDto } from "../../application/dtos/career.dto";
-import { ClassroomDto, ClassroomsByBuildingDto, ClassroomsByDayAndBuildingDto, ClassroomScheduleDto } from "../../application/dtos/classroom.dto";
-import { SubjectDto } from "../../application/dtos/subject.dto";
-import { SubjectPlanDto } from "../../application/dtos/subjectPlan.dto";
+import { CareerDto } from "../dtos/career.dto";
+import { ClassroomDto, ClassroomsByBuildingDto, ClassroomsByDayAndBuildingDto, ClassroomScheduleDto } from "../dtos/classroom.dto";
+import { SubjectDto } from "../dtos/subject.dto";
+import { SubjectPlanDto } from "../dtos/subjectPlan.dto";
 import { Career } from "../../domain/entity/career.model";
 import { ClassroomSchedule } from "../../domain/entity/classroom.model";
 import { SubjectPlan } from "../../domain/entity/subject-plan.model";

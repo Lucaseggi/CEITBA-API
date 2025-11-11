@@ -3,9 +3,9 @@ import { Subject } from "../../domain/entity/subject.model";
 import { SubjectPlan } from "../../domain/entity/subject-plan.model";
 import { Commission } from "../../domain/entity/commission.model";
 import {
-  ItbaApiServiceInterface,
+  ItbaApiGatewayInterface,
   CommissionQueryParams,
-} from "../../domain/interfaces/infrastructure/gateway/itba-api.service.interface";
+} from "../../domain/interfaces/infrastructure/gateway/itba-api.gateway.interface";
 import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
 import { SubjectPlanRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
 import { CommissionRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/commission.repository.interface";
@@ -48,7 +48,7 @@ export class DataSyncService {
 
   constructor(
     @Inject(ITBA_API_SERVICE)
-    private readonly itbaApiService: ItbaApiServiceInterface,
+    private readonly itbaApiService: ItbaApiGatewayInterface,
     @Inject(SUBJECT_REPOSITORY)
     private readonly subjectRepository: SubjectRepositoryInterface,
     @Inject(SUBJECT_PLAN_REPOSITORY)

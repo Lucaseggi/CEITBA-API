@@ -41,12 +41,3 @@ export class SubjectPlanAlreadyExistsException extends DomainException {
         super(message, cause);
     }
 }
-
-export class SubjectPlanDependencyException extends DomainException {
-    constructor(subjectId: string, missingDependencies: string[], cause?: Error) {
-        super(
-            `Subject '${subjectId}' has unmet dependencies: ${missingDependencies.join(', ')}`, 
-            cause
-        );
-    }
-}

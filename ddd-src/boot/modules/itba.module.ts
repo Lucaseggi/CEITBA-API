@@ -17,7 +17,7 @@ import { ClassroomRepository } from "@career/infrastructure/repositories/classro
 import { SubjectPlanRepository } from "@career/infrastructure/repositories/subject-plan.repository.impl";
 import { SubjectRepository } from "@career/infrastructure/repositories/subject.repository.impl";
 import { CommissionRepository } from "@career/infrastructure/repositories/commission.repository.impl";
-import { ItbaApiServiceImpl } from "@career/infrastructure/gateway/itba-api/itba-api.service.impl";
+import { ItbaApiGatewayImpl } from "@career/infrastructure/gateway/itba-api/itba-api.gateway.impl";
 
 import { PrismaService } from "@boot/database/prisma.service";
 import { CronService } from "@boot/cron/cron.service";
@@ -122,7 +122,7 @@ import {
           },
         });
 
-        return new ItbaApiServiceImpl(ITBA_API_TOKEN, undefined, itbaApiClient);
+        return new ItbaApiGatewayImpl(ITBA_API_TOKEN, undefined, itbaApiClient);
       },
     },
   ],

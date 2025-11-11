@@ -7,7 +7,7 @@ export interface CommissionQueryParams {
   levels?: ("GRADUATE" | "UNDERGRADUATE")[];
 }
 
-export interface ItbaApiServiceInterface {
+export interface ItbaApiGatewayInterface {
   getSubjectsByPlan(planId: string): Promise<SubjectPlan[]>;
   getAllSubjects(): Promise<any[]>;
   getCommissions(params?: CommissionQueryParams): Promise<Commission[]>;

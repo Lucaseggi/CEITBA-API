@@ -11,18 +11,6 @@ export class GenericDomainException extends DomainException {
     }
 }
 
-export class ExternalApiException extends DomainException {
-    constructor(service: string, operation: string, cause?: Error) {
-        super(`External API error in ${service} during ${operation}`, cause);
-    }
-}
-
-export class DatabaseOperationException extends DomainException {
-    constructor(operation: string, cause?: Error) {
-        super(`Database operation failed: ${operation}`, cause);
-    }
-}
-
 export class ValidationException extends DomainException {
     constructor(field: string, value: any, reason: string, cause?: Error) {
         super(`Validation failed for field '${field}' with value '${value}': ${reason}`, cause);

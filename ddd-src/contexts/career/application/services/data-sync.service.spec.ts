@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { DataSyncService, DataSyncResult } from './data-sync.service';
-import { ItbaApiServiceInterface } from '../../domain/interfaces/infrastructure/gateway/itba-api.service.interface';
+import { ItbaApiGatewayInterface } from '../../domain/interfaces/infrastructure/gateway/itba-api.gateway.interface';
 import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
 import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
@@ -22,14 +22,14 @@ import {
 
 describe('DataSyncService', () => {
   let service: DataSyncService;
-  let itbaApiService: jest.Mocked<ItbaApiServiceInterface>;
+  let itbaApiService: jest.Mocked<ItbaApiGatewayInterface>;
   let subjectRepository: jest.Mocked<SubjectRepositoryInterface>;
   let subjectPlanRepository: jest.Mocked<SubjectPlanRepositoryInterface>;
   let commissionRepository: jest.Mocked<CommissionRepositoryInterface>;
   let careerRepository: jest.Mocked<CareerRepositoryInterface>;
 
   beforeEach(async () => {
-    const mockItbaApiService: Partial<ItbaApiServiceInterface> = {
+    const mockItbaApiService: Partial<ItbaApiGatewayInterface> = {
       getSubjectsByPlan: jest.fn(),
       getCommissions: jest.fn(),
       getCommissionsBySubject: jest.fn(),

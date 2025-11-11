@@ -1,5 +1,5 @@
 import { ClassroomController } from './classroom.controller';
-import { ItbaMappers } from '../../infrastructure/mappers/itba.mappers';
+import { ItbaMappers } from '../../application/mappers/itba.mappers';
 import { createTestClassroom, createTestClassroomSchedule, createTestTimeSlot } from 'test/utils/test-factories';
 import { DayOfWeek } from '../../domain/entity/classroom.model';
 import { ClassroomServiceInterface } from '../../domain/interfaces/application/classroom.service.interface';
