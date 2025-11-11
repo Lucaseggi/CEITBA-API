@@ -7,7 +7,9 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^@/(.*)$": "<rootDir>/../src/$1"
+    "^@boot/(.*)$": "<rootDir>/../ddd-src/boot/$1",
+    "^@career/(.*)$": "<rootDir>/../ddd-src/contexts/career/$1",
+    "^test/(.*)$": "<rootDir>/$1"
   },
   "setupFilesAfterEnv": ["<rootDir>/jest-setup.ts"]
 }
