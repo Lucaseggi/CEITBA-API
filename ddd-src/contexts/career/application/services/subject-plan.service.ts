@@ -30,32 +30,10 @@ export class SubjectPlanService implements SubjectPlanServiceInterface {
       electivesOnly?: boolean;
     },
   ): Promise<SubjectPlan[]> {
-    if (filters.year !== undefined && filters.semester !== undefined) {
-      return await this.subjectPlanRepository.findBySemester(
-        planId,
-        filters.year,
-        filters.semester,
-      );
-    }
-
-    if (filters.semester !== undefined) {
-      const subjects = await this.subjectPlanRepository.findByPlanId(planId);
-      return subjects.filter(subject => subject.semester === filters.semester);
-    }
-
-    if (filters.year !== undefined) {
-      return await this.subjectPlanRepository.findByYear(planId, filters.year);
-    }
-
-    if (filters.section) {
-      return await this.subjectPlanRepository.findBySection(planId, filters.section);
-    }
-
-    if (filters.electivesOnly === true) {
-      return await this.subjectPlanRepository.findElectives(planId);
-    }
-
-    return await this.subjectPlanRepository.findByPlanId(planId);
+    return await this.subjectPlanRepository.find({
+      planId,
+      ...filters,
+    });
   }
 
   async getSubjectPlan(

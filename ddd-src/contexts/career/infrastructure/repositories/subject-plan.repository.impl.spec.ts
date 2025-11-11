@@ -19,6 +19,157 @@ describe('SubjectPlanRepositoryImpl', () => {
     repository = new SubjectPlanRepository(prisma as any);
   });
 
+  describe('find', () => {
+    it('should find all subject plans with empty filters', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
+        createPrismaSubjectPlanResult('93.50', '2023', 'CIENCIAS_BASICAS', 1, 2),
+      ];
+
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Cálculo I', 6),
+        createPrismaSubjectResult('93.50', 'Probabilidad', 6),
+      ];
+
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
+
+      const result = await repository.find({});
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toBeInstanceOf(SubjectPlan);
+    });
+
+    it('should filter by planId', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
+      ];
+
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Cálculo I', 6),
+      ];
+
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
+
+      const result = await repository.find({ planId: '2023' });
+
+      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
+        where: { planId: '2023' },
+        orderBy: [{ subjectId: 'asc' }],
+      });
+      expect(result).toHaveLength(1);
+    });
+
+    it('should filter by planId and section', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
+      ];
+
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Cálculo I', 6),
+      ];
+
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
+
+      await repository.find({ planId: '2023', section: 'CIENCIAS_BASICAS' });
+
+      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
+        where: { planId: '2023', section: 'CIENCIAS_BASICAS' },
+        orderBy: [{ subjectId: 'asc' }],
+      });
+    });
+
+    it('should filter by planId and year', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
+      ];
+
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Cálculo I', 6),
+      ];
+
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
+
+      await repository.find({ planId: '2023', year: 1 });
+
+      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
+        where: { planId: '2023', year: 1 },
+        orderBy: [{ semester: 'asc' }, { subjectId: 'asc' }],
+      });
+    });
+
+    it('should filter by planId, year, and semester', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
+      ];
+
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Cálculo I', 6),
+      ];
+
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
+
+      await repository.find({ planId: '2023', year: 1, semester: 1 });
+
+      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
+        where: { planId: '2023', year: 1, semester: 1 },
+        orderBy: [{ subjectId: 'asc' }],
+      });
+    });
+
+    it('should filter by planId and subjectId', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
+      ];
+
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Cálculo I', 6),
+      ];
+
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
+
+      await repository.find({ planId: '2023', subjectId: '93.42' });
+
+      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
+        where: { planId: '2023', subjectId: '93.42' },
+        orderBy: [{ subjectId: 'asc' }],
+      });
+    });
+
+    it('should filter electives with electivesOnly flag', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'ELECTIVAS', 0, 0),
+      ];
+
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Electiva I', 3),
+      ];
+
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
+
+      await repository.find({ planId: '2023', electivesOnly: true });
+
+      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
+        where: { planId: '2023', year: 0, semester: 0 },
+        orderBy: [{ subjectId: 'asc' }],
+      });
+    });
+
+    it('should return empty array when no results found', async () => {
+      prisma.planSubject.findMany.mockResolvedValue([]);
+
+      const result = await repository.find({ planId: '2023' });
+
+      expect(result).toEqual([]);
+    });
+  });
+
   describe('findAll', () => {
     it('should return all subject plans with subjects', async () => {
       const mockPlanSubjects = [
@@ -53,7 +204,7 @@ describe('SubjectPlanRepositoryImpl', () => {
   });
 
   describe('findByPlanId', () => {
-    it('should return subject plans for given plan', async () => {
+    it('should delegate to find() with planId filter', async () => {
       const mockPlanSubjects = [
         createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1),
       ];
@@ -69,7 +220,7 @@ describe('SubjectPlanRepositoryImpl', () => {
 
       expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: { planId: '2023' },
-        orderBy: { subjectId: 'asc' },
+        orderBy: [{ subjectId: 'asc' }],
       });
       expect(result).toHaveLength(1);
     });
@@ -84,22 +235,25 @@ describe('SubjectPlanRepositoryImpl', () => {
   });
 
   describe('findByPlanAndSubject', () => {
-    it('should return subject plan when found', async () => {
-      const mockPlanSubject = createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1);
-      const mockSubject = createPrismaSubjectResult('93.42', 'Cálculo I', 6);
+    it('should delegate to find() and return first result', async () => {
+      const mockPlanSubjects = [
+        createPrismaSubjectPlanResult('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1)
+      ];
+      const mockSubjects = [
+        createPrismaSubjectResult('93.42', 'Cálculo I', 6)
+      ];
 
-      prisma.planSubject.findUnique.mockResolvedValue(mockPlanSubject);
-      prisma.subject.findUnique.mockResolvedValue(mockSubject as any);
+      prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
+      prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
       const result = await repository.findByPlanAndSubject('2023', '93.42');
 
-      expect(prisma.planSubject.findUnique).toHaveBeenCalledWith({
+      expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: {
-          subjectId_planId: {
-            subjectId: '93.42',
-            planId: '2023',
-          },
+          planId: '2023',
+          subjectId: '93.42',
         },
+        orderBy: [{ subjectId: 'asc' }],
       });
       expect(result).toBeInstanceOf(SubjectPlan);
       expect(result?.planId).toBe('2023');
@@ -107,18 +261,11 @@ describe('SubjectPlanRepositoryImpl', () => {
     });
 
     it('should return null when plan-subject combination not found', async () => {
-      prisma.planSubject.findUnique.mockResolvedValue(null);
+      prisma.planSubject.findMany.mockResolvedValue([]);
 
       const result = await repository.findByPlanAndSubject('2023', '99.99');
 
       expect(result).toBeNull();
-    });
-
-    it('should throw error when subject not found', async () => {
-      prisma.planSubject.findUnique.mockResolvedValue(createPrismaSubjectPlanResult());
-      prisma.subject.findUnique.mockResolvedValue(null);
-
-      await expect(repository.findByPlanAndSubject('2023', '93.42')).rejects.toThrow('Subject with ID 93.42 not found');
     });
   });
 
