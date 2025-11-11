@@ -4,7 +4,7 @@ import { SubjectPlanFilters } from '../../domain/entity/subject-plan-filters';
 import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { SubjectPlanNotFoundException, SubjectPlanAlreadyExistsException, ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 import { GenericDomainException, ResourceNotFoundException } from '../../domain/exceptions/domain.exceptions';
-import { PrismaService } from '@boot/database/prisma.service';
+import { PrismaService } from '@career/infrastructure/database/prisma.service';
 
 export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
     private readonly prisma: PrismaService;

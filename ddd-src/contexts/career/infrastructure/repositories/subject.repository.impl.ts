@@ -3,7 +3,7 @@ import {
   SubjectAlreadyExistsException,
   ForeignKeyConstraintViolationException,
 } from "../../domain/exceptions/itba.exceptions";
-import { PrismaService } from "@boot/database/prisma.service";
+import { PrismaService } from "@career/infrastructure/database/prisma.service";
 import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
 import { Subject } from "../../domain/entity/subject.model";
 import { GenericDomainException } from "../../domain/exceptions/domain.exceptions";

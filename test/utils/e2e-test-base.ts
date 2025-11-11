@@ -9,7 +9,7 @@ import {
   verifySeedDataIntegrity,
 } from './test-db-setup';
 import { setupMockAuth } from './auth-mock.helper';
-import { PrismaService } from '@boot/database/prisma.service';
+import { PrismaService } from '@career/infrastructure/database/prisma.service';
 
 /**
  * Base class for E2E tests

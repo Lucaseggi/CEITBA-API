@@ -1,6 +1,6 @@
 import { ClassroomSchedule, Classroom, TimeSlot, DayOfWeek, DayOfWeekMapper } from '../../domain/entity/classroom.model';
 import { ClassroomRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/classroom.repository.interface';
-import { PrismaService } from '@boot/database/prisma.service';
+import { PrismaService } from '@career/infrastructure/database/prisma.service';
 
 export class ClassroomRepository implements ClassroomRepositoryInterface {
 

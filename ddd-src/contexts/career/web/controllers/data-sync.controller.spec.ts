@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSyncController } from './data-sync.controller';
 import { DataSyncService, DataSyncResult } from './../../application/services/data-sync.service';
-import { CronService } from '@boot/cron/cron.service';
+import { CronService } from '@career/application/schedulers/cron.service';
 import { createTestSubjectPlan, createTestCommission } from 'test/utils/test-factories';
 
 describe('DataSyncController', () => {

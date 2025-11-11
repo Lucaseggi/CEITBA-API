@@ -19,8 +19,8 @@ import { SubjectRepository } from "@career/infrastructure/repositories/subject.r
 import { CommissionRepository } from "@career/infrastructure/repositories/commission.repository.impl";
 import { ItbaApiGatewayImpl } from "@career/infrastructure/gateway/itba-api/itba-api.gateway.impl";
 
-import { PrismaService } from "@boot/database/prisma.service";
-import { CronService } from "@boot/cron/cron.service";
+import { PrismaService } from "@career/infrastructure/database/prisma.service";
+import { CronService } from "@career/application/schedulers/cron.service";
 import { ApiFactory } from "@career/infrastructure/gateway/itba-api";
 
 import {
