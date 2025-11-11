@@ -5,6 +5,7 @@ import { GetSubjectsByPlanQueryDto } from '../dtos/get-subjects-by-plan-query.dt
 import { CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
 import { SubjectPlanResponseDto } from '../dtos/subject-plan-response.dto';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
+import { SubjectPlanFilters } from '../../domain/entity/subject-plan-filters';
 import { SUBJECT_PLAN_SERVICE } from '@boot/di/injection-tokens';
 import { ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 
@@ -24,12 +25,15 @@ export class SubjectPlanController {
         @Query() query: GetSubjectsByPlanQueryDto
     ): Promise<SubjectPlanResponseDto[]> {
         try {
-            const subjectPlans = await this.subjectPlanService.getSubjectsByPlanWithFilters(planId, {
+            const filters = SubjectPlanFilters.fromQueryParams({
+                planId,
                 year: query.year || undefined,
                 semester: query.semester || undefined,
                 section: query.section,
                 electivesOnly: query.electivesOnly
             });
+
+            const subjectPlans = await this.subjectPlanService.getSubjectsByPlanWithFilters(filters);
             return SubjectPlanResponseDto.fromEntities(subjectPlans);
         } catch (error: unknown) {
             if (error instanceof ResourceNotFoundException) {

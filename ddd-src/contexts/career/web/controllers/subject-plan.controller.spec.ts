@@ -4,6 +4,7 @@ import { createTestSubjectPlan } from 'test/utils/test-factories';
 import { GetSubjectsByPlanQueryDto } from '../dtos/get-subjects-by-plan-query.dto';
 import { CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
+import { SubjectPlanFilters } from '../../domain/entity/subject-plan-filters';
 
 describe('SubjectPlanController', () => {
   let controller: SubjectPlanController;
@@ -36,12 +37,15 @@ describe('SubjectPlanController', () => {
       const query: GetSubjectsByPlanQueryDto = { year: 1, semester: 1, section: 'CIENCIAS_BASICAS' };
       const result = await controller.list('2023', query);
 
-      expect(service.getSubjectsByPlanWithFilters).toHaveBeenCalledWith('2023', {
-        year: 1,
-        semester: 1,
-        section: 'CIENCIAS_BASICAS',
-        electivesOnly: undefined,
-      });
+      expect(service.getSubjectsByPlanWithFilters).toHaveBeenCalledWith(
+        expect.objectContaining({
+          planId: '2023',
+          year: 1,
+          semester: 1,
+          section: 'CIENCIAS_BASICAS',
+          electivesOnly: undefined,
+        })
+      );
       expect(result).toHaveLength(2);
       expect(result[0].subjectId).toEqual('93.42');
       expect(result[1].subjectId).toEqual('93.50');
@@ -54,12 +58,15 @@ describe('SubjectPlanController', () => {
       const query: GetSubjectsByPlanQueryDto = {};
       const result = await controller.list('2023', query);
 
-      expect(service.getSubjectsByPlanWithFilters).toHaveBeenCalledWith('2023', {
-        year: undefined,
-        semester: undefined,
-        section: undefined,
-        electivesOnly: undefined,
-      });
+      expect(service.getSubjectsByPlanWithFilters).toHaveBeenCalledWith(
+        expect.objectContaining({
+          planId: '2023',
+          year: undefined,
+          semester: undefined,
+          section: undefined,
+          electivesOnly: undefined,
+        })
+      );
       expect(result).toHaveLength(1);
     });
 
@@ -79,12 +86,15 @@ describe('SubjectPlanController', () => {
       const query: GetSubjectsByPlanQueryDto = { electivesOnly: true };
       await controller.list('2023', query);
 
-      expect(service.getSubjectsByPlanWithFilters).toHaveBeenCalledWith('2023', {
-        year: undefined,
-        semester: undefined,
-        section: undefined,
-        electivesOnly: true,
-      });
+      expect(service.getSubjectsByPlanWithFilters).toHaveBeenCalledWith(
+        expect.objectContaining({
+          planId: '2023',
+          year: undefined,
+          semester: undefined,
+          section: undefined,
+          electivesOnly: true,
+        })
+      );
     });
   });
 

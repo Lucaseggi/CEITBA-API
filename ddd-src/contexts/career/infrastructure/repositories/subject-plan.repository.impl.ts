@@ -1,6 +1,7 @@
 import { SubjectPlan } from '../../domain/entity/subject-plan.model';
 import { Subject } from '../../domain/entity/subject.model';
-import { SubjectPlanRepositoryInterface, SubjectPlanFilters } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
+import { SubjectPlanFilters } from '../../domain/entity/subject-plan-filters';
+import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { SubjectPlanNotFoundException, SubjectPlanAlreadyExistsException, ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 import { GenericDomainException, ResourceNotFoundException } from '../../domain/exceptions/domain.exceptions';
 import { PrismaService } from '@boot/database/prisma.service';
@@ -13,61 +14,50 @@ export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
     }
 
     async find(filters: SubjectPlanFilters): Promise<SubjectPlan[]> {
-        // Build where clause dynamically based on provided filters
-        const where: any = {};
+        const where = this.buildWhereClause(filters);
+        const orderBy = this.buildOrderByClause(filters);
 
-        if (filters.planId) {
-            where.planId = filters.planId;
-        }
-
-        if (filters.subjectId) {
-            where.subjectId = filters.subjectId;
-        }
-
-        if (filters.section) {
-            where.section = filters.section;
-        }
-
-        if (filters.year !== undefined) {
-            where.year = filters.year;
-        }
-
-        if (filters.semester !== undefined) {
-            where.semester = filters.semester;
-        }
-
-        // Handle electivesOnly flag
-        if (filters.electivesOnly) {
-            where.year = 0;
-            where.semester = 0;
-        }
-
-        // Determine optimal orderBy based on filters
-        let orderBy: any[] = [];
-        if (filters.year !== undefined && filters.semester === undefined) {
-            // Year only: order by semester then subject
-            orderBy = [{ semester: 'asc' }, { subjectId: 'asc' }];
-        } else if (filters.planId || filters.year !== undefined || filters.semester !== undefined || filters.section || filters.subjectId || filters.electivesOnly) {
-            // Any specific filter: order by subject only
-            orderBy = [{ subjectId: 'asc' }];
-        } else {
-            // No filters (findAll): order by plan and subject
-            orderBy = [{ planId: 'asc' }, { subjectId: 'asc' }];
-        }
-
-        const planSubjects = await this.prisma.planSubject.findMany({
-            where,
-            orderBy
-        });
+        const planSubjects = await this.prisma.planSubject.findMany({ where, orderBy });
 
         if (planSubjects.length === 0) {
             return [];
         }
 
-        // Get all unique subject IDs
+        return this.enrichWithSubjects(planSubjects);
+    }
+
+    private buildWhereClause(filters: SubjectPlanFilters): any {
+        const { planId, subjectId, section, year, semester, electivesOnly } = filters;
+
+        const baseFilters = {
+            ...(planId && { planId }),
+            ...(subjectId && { subjectId }),
+            ...(section && { section }),
+        };
+
+        const electiveFilters = electivesOnly ? { year: 0, semester: 0 } : {};
+        const yearSemesterFilters = {
+            ...(year !== undefined && { year }),
+            ...(semester !== undefined && { semester }),
+        };
+
+        return { ...baseFilters, ...electiveFilters, ...yearSemesterFilters };
+    }
+
+    private buildOrderByClause(filters: SubjectPlanFilters): any[] {
+        const hasYearOnly = filters.year !== undefined && filters.semester === undefined;
+        const hasAnyFilter = Object.values(filters).some(value => value !== undefined);
+
+        return hasYearOnly
+            ? [{ semester: 'asc' }, { subjectId: 'asc' }]
+            : hasAnyFilter
+            ? [{ subjectId: 'asc' }]
+            : [{ planId: 'asc' }, { subjectId: 'asc' }];
+    }
+
+    private async enrichWithSubjects(planSubjects: any[]): Promise<SubjectPlan[]> {
         const subjectIds = [...new Set(planSubjects.map(ps => ps.subjectId))];
 
-        // Batch fetch subjects
         const subjects = await this.prisma.subject.findMany({
             where: { id: { in: subjectIds } },
             select: { id: true, name: true, credits: true }
@@ -79,19 +69,19 @@ export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
     }
 
     async findAll(): Promise<SubjectPlan[]> {
-        return this.find({});
+        return this.find(new SubjectPlanFilters());
     }
 
     async findByPlanId(planId: string): Promise<SubjectPlan[]> {
-        return this.find({ planId });
+        return this.find(new SubjectPlanFilters(planId));
     }
 
     async findBySubjectId(subjectId: string): Promise<SubjectPlan[]> {
-        return this.find({ subjectId });
+        return this.find(new SubjectPlanFilters(undefined, subjectId));
     }
 
     async findByPlanAndSubject(planId: string, subjectId: string): Promise<SubjectPlan | null> {
-        const results = await this.find({ planId, subjectId });
+        const results = await this.find(new SubjectPlanFilters(planId, subjectId));
         return results.length > 0 ? results[0] : null;
     }
 
@@ -226,19 +216,19 @@ export class SubjectPlanRepository implements SubjectPlanRepositoryInterface {
     }
 
     async findBySection(planId: string, section: string): Promise<SubjectPlan[]> {
-        return this.find({ planId, section });
+        return this.find(new SubjectPlanFilters(planId, undefined, section));
     }
 
     async findElectives(planId: string): Promise<SubjectPlan[]> {
-        return this.find({ planId, electivesOnly: true });
+        return this.find(new SubjectPlanFilters(planId, undefined, undefined, undefined, undefined, true));
     }
 
     async findByYear(planId: string, year: number): Promise<SubjectPlan[]> {
-        return this.find({ planId, year });
+        return this.find(new SubjectPlanFilters(planId, undefined, undefined, year));
     }
 
     async findBySemester(planId: string, year: number, semester: number): Promise<SubjectPlan[]> {
-        return this.find({ planId, year, semester });
+        return this.find(new SubjectPlanFilters(planId, undefined, undefined, year, semester));
     }
 
     private mapToSubjectPlan(planSubjectData: any, subjectData: any | null): SubjectPlan {

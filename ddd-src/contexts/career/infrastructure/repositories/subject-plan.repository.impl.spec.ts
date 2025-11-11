@@ -1,6 +1,7 @@
 import { SubjectPlanRepository } from './subject-plan.repository.impl';
 import { SubjectPlan } from '../../domain/entity/subject-plan.model';
 import { Subject } from '../../domain/entity/subject.model';
+import { SubjectPlanFilters } from '../../domain/entity/subject-plan-filters';
 import {
   SubjectPlanNotFoundException,
   SubjectPlanAlreadyExistsException,
@@ -34,7 +35,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
       prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
-      const result = await repository.find({});
+      const result = await repository.find(new SubjectPlanFilters());
 
       expect(result).toHaveLength(2);
       expect(result[0]).toBeInstanceOf(SubjectPlan);
@@ -52,7 +53,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
       prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
-      const result = await repository.find({ planId: '2023' });
+      const result = await repository.find(new SubjectPlanFilters('2023'));
 
       expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: { planId: '2023' },
@@ -73,7 +74,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
       prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
-      await repository.find({ planId: '2023', section: 'CIENCIAS_BASICAS' });
+      await repository.find(new SubjectPlanFilters('2023', undefined, 'CIENCIAS_BASICAS'));
 
       expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: { planId: '2023', section: 'CIENCIAS_BASICAS' },
@@ -93,7 +94,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
       prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
-      await repository.find({ planId: '2023', year: 1 });
+      await repository.find(new SubjectPlanFilters('2023', undefined, undefined, 1));
 
       expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: { planId: '2023', year: 1 },
@@ -113,7 +114,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
       prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
-      await repository.find({ planId: '2023', year: 1, semester: 1 });
+      await repository.find(new SubjectPlanFilters('2023', undefined, undefined, 1, 1));
 
       expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: { planId: '2023', year: 1, semester: 1 },
@@ -133,7 +134,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
       prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
-      await repository.find({ planId: '2023', subjectId: '93.42' });
+      await repository.find(new SubjectPlanFilters('2023', '93.42'));
 
       expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: { planId: '2023', subjectId: '93.42' },
@@ -153,7 +154,7 @@ describe('SubjectPlanRepositoryImpl', () => {
       prisma.planSubject.findMany.mockResolvedValue(mockPlanSubjects);
       prisma.subject.findMany.mockResolvedValue(mockSubjects as any);
 
-      await repository.find({ planId: '2023', electivesOnly: true });
+      await repository.find(new SubjectPlanFilters('2023', undefined, undefined, undefined, undefined, true));
 
       expect(prisma.planSubject.findMany).toHaveBeenCalledWith({
         where: { planId: '2023', year: 0, semester: 0 },
@@ -164,7 +165,7 @@ describe('SubjectPlanRepositoryImpl', () => {
     it('should return empty array when no results found', async () => {
       prisma.planSubject.findMany.mockResolvedValue([]);
 
-      const result = await repository.find({ planId: '2023' });
+      const result = await repository.find(new SubjectPlanFilters('2023'));
 
       expect(result).toEqual([]);
     });

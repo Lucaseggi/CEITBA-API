@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SubjectPlanService } from './subject-plan.service';
 import { SubjectPlanRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface';
 import { SubjectRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/subject.repository.interface';
+import { SubjectPlanFilters } from '../../domain/entity/subject-plan-filters';
 import {
   SUBJECT_PLAN_REPOSITORY,
   SUBJECT_REPOSITORY,
@@ -60,79 +61,67 @@ describe('SubjectPlanService', () => {
   describe('getSubjectsByPlanWithFilters', () => {
     it('should call repository.find() with year and semester filters', async () => {
       const mockSubjectPlans = [createTestSubjectPlan('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1)];
+      const filters = new SubjectPlanFilters('2023', undefined, undefined, 1, 1);
       subjectPlanRepository.find.mockResolvedValue(mockSubjectPlans);
 
-      const result = await service.getSubjectsByPlanWithFilters('2023', { year: 1, semester: 1 });
+      const result = await service.getSubjectsByPlanWithFilters(filters);
 
-      expect(subjectPlanRepository.find).toHaveBeenCalledWith({
-        planId: '2023',
-        year: 1,
-        semester: 1,
-      });
+      expect(subjectPlanRepository.find).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockSubjectPlans);
     });
 
     it('should call repository.find() with year filter only', async () => {
       const mockSubjectPlans = [createTestSubjectPlan('93.42', '2023', 'CIENCIAS_BASICAS', 1, 1)];
+      const filters = new SubjectPlanFilters('2023', undefined, undefined, 1);
       subjectPlanRepository.find.mockResolvedValue(mockSubjectPlans);
 
-      const result = await service.getSubjectsByPlanWithFilters('2023', { year: 1 });
+      const result = await service.getSubjectsByPlanWithFilters(filters);
 
-      expect(subjectPlanRepository.find).toHaveBeenCalledWith({
-        planId: '2023',
-        year: 1,
-      });
+      expect(subjectPlanRepository.find).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockSubjectPlans);
     });
 
     it('should call repository.find() with section filter', async () => {
       const mockSubjectPlans = [createTestSubjectPlan('93.42', '2023', 'CIENCIAS_BASICAS')];
+      const filters = new SubjectPlanFilters('2023', undefined, 'CIENCIAS_BASICAS');
       subjectPlanRepository.find.mockResolvedValue(mockSubjectPlans);
 
-      const result = await service.getSubjectsByPlanWithFilters('2023', { section: 'CIENCIAS_BASICAS' });
+      const result = await service.getSubjectsByPlanWithFilters(filters);
 
-      expect(subjectPlanRepository.find).toHaveBeenCalledWith({
-        planId: '2023',
-        section: 'CIENCIAS_BASICAS',
-      });
+      expect(subjectPlanRepository.find).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockSubjectPlans);
     });
 
     it('should call repository.find() with electivesOnly flag', async () => {
       const mockSubjectPlans = [createTestSubjectPlan('93.99', '2023', 'ELECTIVAS', 0, 0)];
+      const filters = new SubjectPlanFilters('2023', undefined, undefined, undefined, undefined, true);
       subjectPlanRepository.find.mockResolvedValue(mockSubjectPlans);
 
-      const result = await service.getSubjectsByPlanWithFilters('2023', { electivesOnly: true });
+      const result = await service.getSubjectsByPlanWithFilters(filters);
 
-      expect(subjectPlanRepository.find).toHaveBeenCalledWith({
-        planId: '2023',
-        electivesOnly: true,
-      });
+      expect(subjectPlanRepository.find).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockSubjectPlans);
     });
 
     it('should call repository.find() with planId only when no filters provided', async () => {
       const mockSubjectPlans = [createTestSubjectPlan('93.42', '2023')];
+      const filters = new SubjectPlanFilters('2023');
       subjectPlanRepository.find.mockResolvedValue(mockSubjectPlans);
 
-      const result = await service.getSubjectsByPlanWithFilters('2023', {});
+      const result = await service.getSubjectsByPlanWithFilters(filters);
 
-      expect(subjectPlanRepository.find).toHaveBeenCalledWith({
-        planId: '2023',
-      });
+      expect(subjectPlanRepository.find).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockSubjectPlans);
     });
 
     it('should call repository.find() with semester filter only', async () => {
       const mockSubjectPlans = [createTestSubjectPlan('93.42', '2023', 'CIENCIAS_BASICAS', 1, 2)];
+      const filters = new SubjectPlanFilters('2023', undefined, undefined, undefined, 2);
       subjectPlanRepository.find.mockResolvedValue(mockSubjectPlans);
 
-      const result = await service.getSubjectsByPlanWithFilters('2023', { semester: 2 });
+      const result = await service.getSubjectsByPlanWithFilters(filters);
 
-      expect(subjectPlanRepository.find).toHaveBeenCalledWith({
-        planId: '2023',
-        semester: 2,
-      });
+      expect(subjectPlanRepository.find).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockSubjectPlans);
     });
   });

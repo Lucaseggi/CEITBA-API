@@ -4,6 +4,7 @@ import { ItbaMappers } from '../../application/mappers/itba.mappers';
 import { SubjectResponseDto } from '../dtos/subject.dto';
 import { SectionSubjectsDto, SubjectDetailDto, CommissionDto } from '../dtos/subject-plan-response.dto';
 import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';
+import { SubjectPlanFilters } from '../../domain/entity/subject-plan-filters';
 import { SUBJECT_SERVICE, SUBJECT_PLAN_SERVICE, COMMISSION_REPOSITORY } from '@boot/di/injection-tokens';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
 import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
@@ -28,7 +29,8 @@ export class SubjectController {
         }
 
         // Get subject plans from service (domain layer)
-        const subjectPlans = await this.subjectPlanService.getSubjectsByPlanWithFilters(plan, {});
+        const filters = new SubjectPlanFilters(plan);
+        const subjectPlans = await this.subjectPlanService.getSubjectsByPlanWithFilters(filters);
 
         if (subjectPlans.length === 0) {
             throw new NotFoundException('No subjects found for the specified plan');
@@ -45,15 +47,10 @@ export class SubjectController {
             const year = subjectPlan.year?.toString() || '0';
             const semester = subjectPlan.semester?.toString() || '0';
 
-            if (!organizedSubjects[section]) {
-                organizedSubjects[section] = {};
-            }
-            if (!organizedSubjects[section][year]) {
-                organizedSubjects[section][year] = {};
-            }
-            if (!organizedSubjects[section][year][semester]) {
-                organizedSubjects[section][year][semester] = [];
-            }
+            // Initialize nested structure using nullish coalescing
+            organizedSubjects[section] ??= {};
+            organizedSubjects[section][year] ??= {};
+            organizedSubjects[section][year][semester] ??= [];
 
             const subjectCommissions = allCommissions.filter(
                 commission => commission.subjectCode === subjectPlan.subjectId

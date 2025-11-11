@@ -1,13 +1,5 @@
 import { SubjectPlan } from "../../../entity/subject-plan.model";
-
-export interface SubjectPlanFilters {
-    planId?: string;
-    subjectId?: string;
-    section?: string;
-    year?: number;
-    semester?: number;
-    electivesOnly?: boolean;
-}
+import { SubjectPlanFilters } from "../../../entity/subject-plan-filters";
 
 export interface SubjectPlanRepositoryInterface {
     find(filters: SubjectPlanFilters): Promise<SubjectPlan[]>;

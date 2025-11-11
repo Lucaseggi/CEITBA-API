@@ -1,15 +1,8 @@
 import { SubjectPlan } from "../../entity/subject-plan.model";
+import { SubjectPlanFilters } from "../../entity/subject-plan-filters";
 
 export interface SubjectPlanServiceInterface {
-    getSubjectsByPlanWithFilters(
-        planId: string,
-        filters: {
-            year?: number;
-            semester?: number;
-            section?: string;
-            electivesOnly?: boolean;
-        }
-    ): Promise<SubjectPlan[]>;
+    getSubjectsByPlanWithFilters(filters: SubjectPlanFilters): Promise<SubjectPlan[]>;
 
     getSubjectPlan(planId: string, subjectId: string): Promise<SubjectPlan | null>;
 

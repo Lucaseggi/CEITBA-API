@@ -1,5 +1,6 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { SubjectPlan } from "../../domain/entity/subject-plan.model";
+import { SubjectPlanFilters } from "../../domain/entity/subject-plan-filters";
 import { SubjectPlanRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject-plan.repository.interface";
 import { SubjectRepositoryInterface } from "../../domain/interfaces/infrastructure/repositories/subject.repository.interface";
 import { SubjectPlanServiceInterface } from "../../domain/interfaces/application/subject-plan.service.interface";
@@ -21,19 +22,8 @@ export class SubjectPlanService implements SubjectPlanServiceInterface {
     private readonly subjectRepository: SubjectRepositoryInterface,
   ) {}
 
-  async getSubjectsByPlanWithFilters(
-    planId: string,
-    filters: {
-      year?: number;
-      semester?: number;
-      section?: string;
-      electivesOnly?: boolean;
-    },
-  ): Promise<SubjectPlan[]> {
-    return await this.subjectPlanRepository.find({
-      planId,
-      ...filters,
-    });
+  async getSubjectsByPlanWithFilters(filters: SubjectPlanFilters): Promise<SubjectPlan[]> {
+    return await this.subjectPlanRepository.find(filters);
   }
 
   async getSubjectPlan(
