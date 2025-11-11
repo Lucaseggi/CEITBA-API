@@ -133,3 +133,9 @@ dist
 
 # Claude Code settings
 .claude/
+
+# Dependency graph files
+deps.dot
+deps.svg
+.dependency-cruiser.js
+dependency-report.html

@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@career/infrastructure/persistence/types/day-of-week.types';
+import { DayOfWeek } from '@career/domain/entity/day-of-week.types';
 import { Career } from '@career/domain/entity/career.model';
 import { Classroom, ClassroomSchedule, TimeSlot } from '@career/domain/entity/classroom.model';
 import { Commission, CommissionTime, SubjectType } from '@career/domain/entity/commission.model';

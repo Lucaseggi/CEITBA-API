@@ -1,4 +1,4 @@
-import { DayOfWeek } from '../../infrastructure/persistence/types/day-of-week.types';
+import { DayOfWeek } from './day-of-week.types';
 
 // Re-export for backward compatibility
 export { DayOfWeek };

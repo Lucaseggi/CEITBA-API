@@ -1,4 +1,4 @@
-import { DayOfWeek } from '../persistence/types/day-of-week.types';
+import { DayOfWeek } from '../../domain/entity/day-of-week.types';
 import { ItbaMappers } from './itba.mappers';
 import {
   createTestSubject,
