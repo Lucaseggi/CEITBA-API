@@ -1,15 +1,15 @@
-import { ClassroomRepositoryImpl } from './classroom.repository.impl';
+import { ClassroomRepository } from './classroom.repository.impl';
 import { ClassroomSchedule, Classroom, TimeSlot, DayOfWeek } from '../../domain/entity/classroom.model';
 import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mock.helper';
 import { createTestClassroom, createTestTimeSlot, createTestClassroomSchedule } from 'test/utils/test-factories';
 
 describe('ClassroomRepositoryImpl', () => {
-  let repository: ClassroomRepositoryImpl;
+  let repository: ClassroomRepository;
   let prisma: MockPrismaService;
 
   beforeEach(() => {
     prisma = createMockPrismaService();
-    repository = new ClassroomRepositoryImpl(prisma as any);
+    repository = new ClassroomRepository(prisma as any);
   });
 
   describe('findAllClassrooms', () => {

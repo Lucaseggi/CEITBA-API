@@ -1,4 +1,4 @@
-import { SubjectPlanRepositoryImpl } from './subject-plan.repository.impl';
+import { SubjectPlanRepository } from './subject-plan.repository.impl';
 import { SubjectPlan } from '../../domain/entity/subject-plan.model';
 import { Subject } from '../../domain/entity/subject.model';
 import {
@@ -11,12 +11,12 @@ import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mo
 import { createTestSubjectPlan, createPrismaSubjectPlanResult, createPrismaSubjectResult } from 'test/utils/test-factories';
 
 describe('SubjectPlanRepositoryImpl', () => {
-  let repository: SubjectPlanRepositoryImpl;
+  let repository: SubjectPlanRepository;
   let prisma: MockPrismaService;
 
   beforeEach(() => {
     prisma = createMockPrismaService();
-    repository = new SubjectPlanRepositoryImpl(prisma as any);
+    repository = new SubjectPlanRepository(prisma as any);
   });
 
   describe('findAll', () => {

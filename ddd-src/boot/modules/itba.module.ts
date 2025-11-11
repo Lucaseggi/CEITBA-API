@@ -12,11 +12,11 @@ import { SubjectService } from "@career/application/services/subject.service";
 import { CommissionServiceImpl } from "@career/application/services/commission.service";
 import { DataSyncService } from "@career/application/services/data-sync.service";
 
-import { CareerRepositoryImpl } from "@career/infrastructure/repositories/career.repository.impl";
-import { ClassroomRepositoryImpl } from "@career/infrastructure/repositories/classroom.repository.impl";
-import { SubjectPlanRepositoryImpl } from "@career/infrastructure/repositories/subject-plan.repository.impl";
-import { SubjectRepositoryImpl } from "@career/infrastructure/repositories/subject.repository.impl";
-import { CommissionRepositoryImpl } from "@career/infrastructure/repositories/commission.repository.impl";
+import { CareerRepository } from "@career/infrastructure/repositories/career.repository.impl";
+import { ClassroomRepository } from "@career/infrastructure/repositories/classroom.repository.impl";
+import { SubjectPlanRepository } from "@career/infrastructure/repositories/subject-plan.repository.impl";
+import { SubjectRepository } from "@career/infrastructure/repositories/subject.repository.impl";
+import { CommissionRepository } from "@career/infrastructure/repositories/commission.repository.impl";
 import { ItbaApiServiceImpl } from "@career/infrastructure/gateway/itba-api/itba-api.service.impl";
 
 import { PrismaService } from "@boot/database/prisma.service";
@@ -75,35 +75,35 @@ import {
     {
       provide: CAREER_REPOSITORY,
       useFactory: (prismaService: PrismaService) => {
-        return new CareerRepositoryImpl(prismaService);
+        return new CareerRepository(prismaService);
       },
       inject: [PrismaService],
     },
     {
       provide: CLASSROOM_REPOSITORY,
       useFactory: (prismaService: PrismaService) => {
-        return new ClassroomRepositoryImpl(prismaService);
+        return new ClassroomRepository(prismaService);
       },
       inject: [PrismaService],
     },
     {
       provide: SUBJECT_REPOSITORY,
       useFactory: (prismaService: PrismaService) => {
-        return new SubjectRepositoryImpl(prismaService);
+        return new SubjectRepository(prismaService);
       },
       inject: [PrismaService],
     },
     {
       provide: SUBJECT_PLAN_REPOSITORY,
       useFactory: (prismaService: PrismaService) => {
-        return new SubjectPlanRepositoryImpl(prismaService);
+        return new SubjectPlanRepository(prismaService);
       },
       inject: [PrismaService],
     },
     {
       provide: COMMISSION_REPOSITORY,
       useFactory: (prismaService: PrismaService) => {
-        return new CommissionRepositoryImpl(prismaService);
+        return new CommissionRepository(prismaService);
       },
       inject: [PrismaService],
     },

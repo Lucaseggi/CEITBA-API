@@ -1,4 +1,4 @@
-import { CareerRepositoryImpl } from './career.repository.impl';
+import { CareerRepository } from './career.repository.impl';
 import { Career } from '../../domain/entity/career.model';
 import {
   CareerNotFoundException,
@@ -10,12 +10,12 @@ import { createMockPrismaService, MockPrismaService } from 'test/utils/prisma-mo
 import { createTestCareer, createPrismaCareerResult } from 'test/utils/test-factories';
 
 describe('CareerRepositoryImpl', () => {
-  let repository: CareerRepositoryImpl;
+  let repository: CareerRepository;
   let prisma: MockPrismaService;
 
   beforeEach(() => {
     prisma = createMockPrismaService();
-    repository = new CareerRepositoryImpl(prisma as any);
+    repository = new CareerRepository(prisma as any);
   });
 
   describe('findAll', () => {

@@ -4,7 +4,7 @@ import { GenericDomainException } from '../../domain/exceptions';
 import { PrismaService } from '@boot/database/prisma.service';
 import { DayOfWeek as PrismaDayOfWeek } from '@prisma/client';
 
-export class CommissionRepositoryImpl implements CommissionRepositoryInterface {
+export class CommissionRepository implements CommissionRepositoryInterface {
     private readonly prisma: PrismaService;
 
     constructor(prisma: PrismaService) {
