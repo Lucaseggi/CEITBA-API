@@ -1,33 +1,36 @@
 import { Inject,  Controller, Get, Post, Put, Delete, Query, Param, Body, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ResourceNotFoundException, ValidationException } from '../../domain/exceptions/domain.exceptions';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
-import { SubjectPlanQueryDto, CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { GetSubjectsByPlanQueryDto } from '../dtos/get-subjects-by-plan-query.dto';
+import { CreateSubjectPlanDto, UpdateSubjectPlanDto } from '../dtos/subject-plan.dto';
+import { SubjectPlanResponseDto } from '../dtos/subject-plan-response.dto';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
 import { SUBJECT_PLAN_SERVICE } from '@boot/di/injection-tokens';
 import { ForeignKeyConstraintViolationException } from '../../domain/exceptions/itba.exceptions';
 
-@ApiTags('Subject by plan')
+@ApiTags('Subject Plans')
 @Controller('v1/plans')
 export class SubjectPlanController {
     constructor(@Inject(SUBJECT_PLAN_SERVICE) private readonly subjectPlanService: SubjectPlanServiceInterface) { }
 
     @Get(':planId/subjects')
-    @ApiOperation({ summary: 'Get subjects by plan with filters' })
+    @ApiOperation({ summary: 'List all subject plans for a given plan with optional filters' })
     @ApiParam({ name: 'planId', description: 'Plan ID' })
-    @ApiResponse({ status: 200, description: 'List of subjects for the plan' })
+    @ApiResponse({ status: 200, description: 'List of subject plans', type: [SubjectPlanResponseDto] })
     @ApiResponse({ status: 400, description: 'Invalid request data' })
     @ApiResponse({ status: 404, description: 'Plan not found' })
-    async getSubjectsByPlan(
+    async list(
         @Param('planId') planId: string,
-        @Query() query: SubjectPlanQueryDto
-    ) {
+        @Query() query: GetSubjectsByPlanQueryDto
+    ): Promise<SubjectPlanResponseDto[]> {
         try {
-            return await this.subjectPlanService.getSubjectsByPlanWithFilters(planId, {
+            const subjectPlans = await this.subjectPlanService.getSubjectsByPlanWithFilters(planId, {
                 year: query.year || undefined,
                 semester: query.semester || undefined,
                 section: query.section,
-                type: query.type
+                electivesOnly: query.electivesOnly
             });
+            return SubjectPlanResponseDto.fromEntities(subjectPlans);
         } catch (error: unknown) {
             if (error instanceof ResourceNotFoundException) {
                 throw new NotFoundException(error.message);
@@ -36,58 +39,49 @@ export class SubjectPlanController {
         }
     }
 
-
-    @Get('subjects/:subjectId/plans')
-    @ApiOperation({ summary: 'Get subject plans by subject' })
-    @ApiParam({ name: 'subjectId', description: 'Subject ID' })
-    @ApiResponse({ status: 200, description: 'List of subject plans' })
-    async getSubjectPlansBySubject(@Param('subjectId') subjectId: string) {
-        return await this.subjectPlanService.getSubjectPlansBySubject(subjectId);
-    }
-
-    @Get(':planId/subject/:subjectId')
-    @ApiOperation({ summary: 'Get specific subject plan' })
+    @Get(':planId/subjects/:subjectId')
+    @ApiOperation({ summary: 'Get a specific subject plan by plan and subject ID' })
     @ApiParam({ name: 'planId', description: 'Plan ID' })
     @ApiParam({ name: 'subjectId', description: 'Subject ID' })
-    @ApiResponse({ status: 200, description: 'Subject plan found' })
+    @ApiResponse({ status: 200, description: 'Subject plan found', type: SubjectPlanResponseDto })
     @ApiResponse({ status: 404, description: 'Subject plan not found' })
-    async getSubjectPlan(
+    async findOne(
         @Param('planId') planId: string,
         @Param('subjectId') subjectId: string
-    ) {
+    ): Promise<SubjectPlanResponseDto> {
         const subjectPlan = await this.subjectPlanService.getSubjectPlan(planId, subjectId);
 
         if (!subjectPlan) {
             throw new NotFoundException('Subject plan not found');
         }
 
-        return subjectPlan;
+        return SubjectPlanResponseDto.fromEntity(subjectPlan);
     }
 
-    @Post(':planId/subject')
+    @Post(':planId/subjects')
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({ summary: 'Create a new subject plan' })
     @ApiParam({ name: 'planId', description: 'Plan ID' })
     @ApiBody({ type: CreateSubjectPlanDto })
-    @ApiResponse({ status: 201, description: 'Subject plan created successfully' })
+    @ApiResponse({ status: 201, description: 'Subject plan created successfully', type: SubjectPlanResponseDto })
     @ApiResponse({ status: 400, description: 'Invalid request or subject/plan not found' })
-    async createSubjectPlan(
+    async create(
         @Param('planId') planId: string,
         @Body() createData: CreateSubjectPlanDto
-    ) {
+    ): Promise<SubjectPlanResponseDto> {
         try {
-            const createSubjectPlanDto = {
-                ...createData,
+            const subjectPlan = await this.subjectPlanService.createSubjectPlan(
+                createData.subjectId,
                 planId,
-                year: createData.year ?? null,
-                semester: createData.semester ?? null,
-                creditsRequired: createData.creditsRequired ?? null,
-                dependencies: createData.dependencies ?? []
-            };
-
-            return await this.subjectPlanService.createSubjectPlan(createSubjectPlanDto);
+                createData.section,
+                createData.year ?? null,
+                createData.semester ?? null,
+                createData.dependencies ?? [],
+                createData.creditsRequired ?? null
+            );
+            return SubjectPlanResponseDto.fromEntity(subjectPlan);
         } catch (error: unknown) {
-            if (error instanceof ResourceNotFoundException || 
+            if (error instanceof ResourceNotFoundException ||
                 error instanceof ValidationException ||
                 error instanceof ForeignKeyConstraintViolationException) {
                 throw new BadRequestException(error.message);
@@ -96,19 +90,19 @@ export class SubjectPlanController {
         }
     }
 
-    @Put(':planId/subject/:subjectId')
-    @ApiOperation({ summary: 'Update subject plan' })
+    @Put(':planId/subjects/:subjectId')
+    @ApiOperation({ summary: 'Update an existing subject plan' })
     @ApiParam({ name: 'planId', description: 'Plan ID' })
     @ApiParam({ name: 'subjectId', description: 'Subject ID' })
     @ApiBody({ type: UpdateSubjectPlanDto })
-    @ApiResponse({ status: 200, description: 'Subject plan updated successfully' })
+    @ApiResponse({ status: 200, description: 'Subject plan updated successfully', type: SubjectPlanResponseDto })
     @ApiResponse({ status: 404, description: 'Subject plan not found' })
     @ApiResponse({ status: 400, description: 'Invalid request' })
-    async updateSubjectPlan(
+    async update(
         @Param('planId') planId: string,
         @Param('subjectId') subjectId: string,
         @Body() updateData: UpdateSubjectPlanDto
-    ) {
+    ): Promise<SubjectPlanResponseDto> {
         try {
             const updatedSubjectPlan = await this.subjectPlanService.updateSubjectPlan(planId, subjectId, updateData);
 
@@ -116,7 +110,7 @@ export class SubjectPlanController {
                 throw new NotFoundException('Subject plan not found');
             }
 
-            return updatedSubjectPlan;
+            return SubjectPlanResponseDto.fromEntity(updatedSubjectPlan);
         } catch (error: unknown) {
             if (error instanceof ResourceNotFoundException) {
                 throw new NotFoundException(error.message);
@@ -128,17 +122,17 @@ export class SubjectPlanController {
         }
     }
 
-    @Delete(':planId/subject/:subjectId')
+    @Delete(':planId/subjects/:subjectId')
     @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiOperation({ summary: 'Delete subject plan' })
+    @ApiOperation({ summary: 'Delete a subject plan' })
     @ApiParam({ name: 'planId', description: 'Plan ID' })
     @ApiParam({ name: 'subjectId', description: 'Subject ID' })
     @ApiResponse({ status: 204, description: 'Subject plan deleted successfully' })
     @ApiResponse({ status: 404, description: 'Subject plan not found' })
-    async deleteSubjectPlan(
+    async remove(
         @Param('planId') planId: string,
         @Param('subjectId') subjectId: string
-    ) {
+    ): Promise<void> {
         try {
             const deleted = await this.subjectPlanService.deleteSubjectPlan(planId, subjectId);
 

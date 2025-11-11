@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { SubjectController } from './subject.controller';
 import { SubjectServiceInterface } from '../../domain/interfaces/application/subject.service.interface';
 import { SubjectPlanServiceInterface } from '../../domain/interfaces/application/subject-plan.service.interface';
+import { CommissionRepositoryInterface } from '../../domain/interfaces/infrastructure/repositories/commission.repository.interface';
 import { Subject } from '../../domain/entity/subject.model';
 
 const buildSubject = (id = '93.42', name = 'Cálculo I', credits = 6) =>
@@ -11,6 +12,7 @@ describe('SubjectController', () => {
     let controller: SubjectController;
     let subjectService: jest.Mocked<SubjectServiceInterface>;
     let subjectPlanService: jest.Mocked<SubjectPlanServiceInterface>;
+    let commissionRepository: jest.Mocked<CommissionRepositoryInterface>;
 
     beforeEach(() => {
         subjectService = {
@@ -20,10 +22,14 @@ describe('SubjectController', () => {
         } as unknown as jest.Mocked<SubjectServiceInterface>;
 
         subjectPlanService = {
-            getSubjectsByPlanOrganized: jest.fn(),
+            getSubjectsByPlanWithFilters: jest.fn(),
         } as unknown as jest.Mocked<SubjectPlanServiceInterface>;
 
-        controller = new SubjectController(subjectService, subjectPlanService);
+        commissionRepository = {
+            findAll: jest.fn(),
+        } as unknown as jest.Mocked<CommissionRepositoryInterface>;
+
+        controller = new SubjectController(subjectService, subjectPlanService, commissionRepository);
     });
 
     describe('getSubjectById', () => {

@@ -2,50 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, Min, Max, IsInt, IsEnum } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
-export class SubjectPlanQueryDto {
-  @ApiPropertyOptional({
-    description: 'Year',
-    example: 2024,
-  })
-  @IsOptional()
-  @Transform(({ value }) => value ? parseInt(value, 10) : null)
-  @IsNumber()
-  year?: number;
-
-  @ApiPropertyOptional({
-    description: 'Semester',
-    example: 1,
-  })
-  @IsOptional()
-  @Transform(({ value }) => value ? parseInt(value, 10) : null)
-  @IsNumber()
-  semester?: number;
-
-  @ApiPropertyOptional({
-    description: 'Section',
-    example: 'A',
-  })
-  @IsOptional()
-  @IsString()
-  section?: string;
-
-  @ApiPropertyOptional({
-    description: 'Type of subject plan',
-    enum: ['elective'],
-  })
-  @IsOptional()
-  @IsEnum(['elective'])
-  type?: 'elective';
-
-  @ApiPropertyOptional({
-    description: 'Plan ID',
-    example: 'plan-123',
-  })
-  @IsOptional()
-  @IsString()
-  planId?: string;
-}
-
 export class CreateSubjectPlanDto {
   @ApiProperty({
     description: 'Subject ID',

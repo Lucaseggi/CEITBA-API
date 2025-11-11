@@ -1,5 +1,90 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { SubjectPlan } from '../../domain/entity/subject-plan.model';
 
+export class SubjectPlanResponseDto {
+  @ApiProperty({
+    description: 'Subject ID',
+    example: '93.42',
+  })
+  subjectId!: string;
+
+  @ApiProperty({
+    description: 'Plan ID',
+    example: '2023',
+  })
+  planId!: string;
+
+  @ApiProperty({
+    description: 'Section',
+    example: 'CIENCIAS_BASICAS',
+  })
+  section!: string;
+
+  @ApiPropertyOptional({
+    description: 'Year',
+    example: 1,
+    nullable: true,
+  })
+  year!: number | null;
+
+  @ApiPropertyOptional({
+    description: 'Semester',
+    example: 1,
+    nullable: true,
+  })
+  semester!: number | null;
+
+  @ApiProperty({
+    description: 'Dependencies',
+    example: ['93.26', '61.03'],
+    type: [String],
+  })
+  dependencies!: string[];
+
+  @ApiPropertyOptional({
+    description: 'Credits required',
+    example: 120,
+    nullable: true,
+  })
+  creditsRequired!: number | null;
+
+  @ApiProperty({
+    description: 'Subject information',
+    example: {
+      id: '93.42',
+      name: 'Cálculo I',
+      credits: 6,
+    },
+  })
+  subject!: {
+    id: string;
+    name: string;
+    credits: number;
+  };
+
+  static fromEntity(subjectPlan: SubjectPlan): SubjectPlanResponseDto {
+    const dto = new SubjectPlanResponseDto();
+    dto.subjectId = subjectPlan.subjectId;
+    dto.planId = subjectPlan.planId;
+    dto.section = subjectPlan.section;
+    dto.year = subjectPlan.year;
+    dto.semester = subjectPlan.semester;
+    dto.dependencies = subjectPlan.dependencies;
+    dto.creditsRequired = subjectPlan.creditsRequired;
+    dto.subject = {
+      id: subjectPlan.subject.id,
+      name: subjectPlan.subject.name,
+      credits: subjectPlan.subject.credits,
+    };
+    return dto;
+  }
+
+  static fromEntities(subjectPlans: SubjectPlan[]): SubjectPlanResponseDto[] {
+    return subjectPlans.map(sp => SubjectPlanResponseDto.fromEntity(sp));
+  }
+}
+
+// DTOs for organized subjects view (used by subject.controller.ts)
 export class ScheduleDto {
   @ApiProperty({
     description: 'Day of the week',
